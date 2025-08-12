@@ -31,6 +31,25 @@ Rails.application.routes.draw do
   match "/404", via: :all, to: "errors#not_found"
   match "/500", via: :all, to: "errors#internal_server_error"
 
+  # Community Platform Routes
+  get "/community", to: "community#index", as: :community_landing
+
+  resources :spaces, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
+    member do
+      post :join
+      delete :leave
+    end
+    resources :posts, only: [:index, :new, :create]
+  end
+
+  resources :posts, only: [:show, :edit, :update, :destroy], param: :id do
+    resources :comments, only: [:create, :edit, :update, :destroy]
+    member do
+      post :like
+      delete :unlike
+    end
+  end
+
   authenticated :user do
     root to: "dashboard#show", as: :user_root
     # Alternate route to use if logged in users should still see public root

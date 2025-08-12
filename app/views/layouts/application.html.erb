@@ -3,7 +3,6 @@
   <head>
     <%= render "head" %>
   </head>
-  <%# To enable theme switcher use '<%= current_user&.theme &>' with data-theme-preference-value="" instead of 'light' %>
   <body data-controller="theme bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>" data-theme-preference-value="<%= current_user&.theme %>">
     <header>
       <%= impersonation_banner %>

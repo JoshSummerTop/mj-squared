@@ -1,0 +1,9 @@
+<% if membership %>
+  <%= button_to 'Leave Space', leave_space_path(space), method: :delete, 
+      class: 'btn btn-secondary', 
+      data: { turbo_method: :delete, confirm: 'Are you sure you want to leave this space?' } %>
+<% else %>
+  <%= button_to 'Join Space', join_space_path(space), method: :post, 
+      class: 'btn btn-primary' %>
+<% end %>
+

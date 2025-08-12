@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_18_192532) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_10_000045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -96,6 +96,68 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_192532) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "activities", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description", null: false
+    t.string "address", null: false
+    t.bigint "user_id", null: false
+    t.bigint "activity_category_id", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_category_id"], name: "index_activities_on_activity_category_id"
+    t.index ["slug"], name: "index_activities_on_slug", unique: true
+    t.index ["user_id"], name: "index_activities_on_user_id"
+  end
+
+  create_table "activity_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_activity_categories_on_name", unique: true
+    t.index ["slug"], name: "index_activity_categories_on_slug", unique: true
+  end
+
+  create_table "addresses", force: :cascade do |t|
+    t.string "addressable_type", null: false
+    t.bigint "addressable_id", null: false
+    t.integer "address_type"
+    t.string "line1"
+    t.string "line2"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.string "postal_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
+  end
+
+  create_table "age_group_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "slug"
+    t.index ["slug"], name: "index_age_group_categories_on_slug", unique: true
+  end
+
+  create_table "age_group_categories_posts", id: false, force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.bigint "age_group_category_id", null: false
+    t.index ["age_group_category_id"], name: "index_age_group_categories_posts_on_age_group_category_id"
+    t.index ["post_id", "age_group_category_id"], name: "index_posts_age_groups_on_post_and_age_group", unique: true
+    t.index ["post_id"], name: "index_age_group_categories_posts_on_post_id"
+  end
+
+  create_table "age_group_categories_spaces", id: false, force: :cascade do |t|
+    t.bigint "space_id", null: false
+    t.bigint "age_group_category_id", null: false
+    t.index ["age_group_category_id"], name: "index_age_group_categories_spaces_on_age_group_category_id"
+    t.index ["space_id", "age_group_category_id"], name: "index_spaces_age_groups_on_space_and_age_group", unique: true
+    t.index ["space_id"], name: "index_age_group_categories_spaces_on_space_id"
+  end
+
   create_table "announcements", force: :cascade do |t|
     t.string "kind"
     t.string "title"
@@ -118,6 +180,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_192532) do
     t.index ["user_id"], name: "index_api_tokens_on_user_id"
   end
 
+  create_table "comments", force: :cascade do |t|
+    t.text "content", null: false
+    t.bigint "post_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_comments_on_post_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "community_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_community_categories_on_slug", unique: true
+  end
+
+  create_table "community_categories_spaces", id: false, force: :cascade do |t|
+    t.bigint "space_id", null: false
+    t.bigint "community_category_id", null: false
+    t.index ["community_category_id"], name: "index_community_categories_spaces_on_community_category_id"
+    t.index ["space_id", "community_category_id"], name: "index_spaces_community_categories_on_space_and_category", unique: true
+    t.index ["space_id"], name: "index_community_categories_spaces_on_space_id"
+  end
+
   create_table "connected_accounts", force: :cascade do |t|
     t.bigint "owner_id"
     t.string "provider"
@@ -133,11 +221,83 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_192532) do
     t.index ["owner_id", "owner_type"], name: "index_connected_accounts_on_owner_id_and_owner_type"
   end
 
+  create_table "event_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_event_categories_on_name", unique: true
+    t.index ["slug"], name: "index_event_categories_on_slug", unique: true
+  end
+
+  create_table "event_registrations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "event_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_registrations_on_event_id"
+    t.index ["user_id", "event_id"], name: "index_event_registrations_on_user_id_and_event_id", unique: true
+    t.index ["user_id"], name: "index_event_registrations_on_user_id"
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description", null: false
+    t.string "host_name", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.time "start_time", null: false
+    t.time "end_time", null: false
+    t.string "address", null: false
+    t.string "google_map_url"
+    t.bigint "user_id", null: false
+    t.bigint "event_category_id", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.float "latitude"
+    t.float "longitude"
+    t.index ["event_category_id"], name: "index_events_on_event_category_id"
+    t.index ["slug"], name: "index_events_on_slug", unique: true
+    t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
+  end
+
   create_table "inbound_webhooks", force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.text "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "post_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_likes_on_post_id"
+    t.index ["user_id", "post_id"], name: "index_likes_on_user_id_and_post_id", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "memberships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "space_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["space_id"], name: "index_memberships_on_space_id"
+    t.index ["user_id", "space_id"], name: "index_memberships_on_user_id_and_space_id", unique: true
+    t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
   create_table "noticed_events", force: :cascade do |t|
@@ -146,9 +306,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_192532) do
     t.string "record_type"
     t.bigint "record_id"
     t.jsonb "params"
-    t.integer "notifications_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "notifications_count"
     t.index ["account_id"], name: "index_noticed_events_on_account_id"
     t.index ["record_type", "record_id"], name: "index_noticed_events_on_record"
   end
@@ -312,6 +472,158 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_192532) do
     t.string "contact_url"
   end
 
+  create_table "posts", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "content"
+    t.bigint "space_id", null: false
+    t.bigint "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "slug"
+    t.index ["created_by_id"], name: "index_posts_on_created_by_id"
+    t.index ["slug"], name: "index_posts_on_slug", unique: true
+    t.index ["space_id"], name: "index_posts_on_space_id"
+  end
+
+  create_table "resource_age_group_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_resource_age_group_categories_on_name", unique: true
+    t.index ["slug"], name: "index_resource_age_group_categories_on_slug", unique: true
+  end
+
+  create_table "resource_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_resource_categories_on_slug", unique: true
+  end
+
+  create_table "resources", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description", null: false
+    t.string "video_url"
+    t.bigint "user_id", null: false
+    t.bigint "resource_category_id", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["resource_category_id"], name: "index_resources_on_resource_category_id"
+    t.index ["slug"], name: "index_resources_on_slug", unique: true
+    t.index ["user_id"], name: "index_resources_on_user_id"
+  end
+
+  create_table "service_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_service_categories_on_slug", unique: true
+  end
+
+  create_table "services", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description", null: false
+    t.string "website_url"
+    t.string "image"
+    t.string "phone", null: false
+    t.string "email", null: false
+    t.string "contact_name", null: false
+    t.bigint "service_category_id", null: false
+    t.string "address_line1"
+    t.string "address_line2"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.string "country"
+    t.string "google_map_url"
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service_category_id"], name: "index_services_on_service_category_id"
+    t.index ["slug"], name: "index_services_on_slug", unique: true
+  end
+
+  create_table "spaces", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.bigint "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "slug"
+    t.index ["created_by_id"], name: "index_spaces_on_created_by_id"
+    t.index ["slug"], name: "index_spaces_on_slug", unique: true
+  end
+
+  create_table "specialist_age_groups", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_specialist_age_groups_on_slug", unique: true
+  end
+
+  create_table "specialist_age_groups_specialists", id: false, force: :cascade do |t|
+    t.bigint "specialist_id", null: false
+    t.bigint "specialist_age_group_id", null: false
+  end
+
+  create_table "specialist_categories", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_specialist_categories_on_slug", unique: true
+  end
+
+  create_table "specialists", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.string "website_url"
+    t.string "phone"
+    t.string "email"
+    t.string "contact_name"
+    t.string "address"
+    t.string "google_map_url"
+    t.bigint "specialist_category_id", null: false
+    t.string "slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "address_line1"
+    t.string "address_line2"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.string "country"
+    t.index ["slug"], name: "index_specialists_on_slug", unique: true
+    t.index ["specialist_category_id"], name: "index_specialists_on_specialist_category_id"
+  end
+
+  create_table "testimonial_categories", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_testimonial_categories_on_slug", unique: true
+  end
+
+  create_table "testimonials", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.string "video_url"
+    t.bigint "user_id", null: false
+    t.bigint "testimonial_category_id", null: false
+    t.string "slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_testimonials_on_slug", unique: true
+    t.index ["testimonial_category_id"], name: "index_testimonials_on_testimonial_category_id"
+    t.index ["user_id"], name: "index_testimonials_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -360,8 +672,35 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_192532) do
   add_foreign_key "account_users", "users"
   add_foreign_key "accounts", "users", column: "owner_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "activities", "activity_categories"
+  add_foreign_key "activities", "users"
+  add_foreign_key "age_group_categories_posts", "age_group_categories"
+  add_foreign_key "age_group_categories_posts", "posts"
+  add_foreign_key "age_group_categories_spaces", "age_group_categories"
+  add_foreign_key "age_group_categories_spaces", "spaces"
   add_foreign_key "api_tokens", "users"
+  add_foreign_key "comments", "posts"
+  add_foreign_key "comments", "users"
+  add_foreign_key "community_categories_spaces", "community_categories"
+  add_foreign_key "community_categories_spaces", "spaces"
+  add_foreign_key "event_registrations", "events"
+  add_foreign_key "event_registrations", "users"
+  add_foreign_key "events", "event_categories"
+  add_foreign_key "events", "users"
+  add_foreign_key "likes", "posts"
+  add_foreign_key "likes", "users"
+  add_foreign_key "memberships", "spaces"
+  add_foreign_key "memberships", "users"
   add_foreign_key "pay_charges", "pay_customers", column: "customer_id"
   add_foreign_key "pay_payment_methods", "pay_customers", column: "customer_id"
   add_foreign_key "pay_subscriptions", "pay_customers", column: "customer_id"
+  add_foreign_key "posts", "spaces"
+  add_foreign_key "posts", "users", column: "created_by_id"
+  add_foreign_key "resources", "resource_categories"
+  add_foreign_key "resources", "users"
+  add_foreign_key "services", "service_categories"
+  add_foreign_key "spaces", "users", column: "created_by_id"
+  add_foreign_key "specialists", "specialist_categories"
+  add_foreign_key "testimonials", "testimonial_categories"
+  add_foreign_key "testimonials", "users"
 end

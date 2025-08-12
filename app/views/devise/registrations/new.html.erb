@@ -45,6 +45,11 @@
     </div>
 
     <div class="form-group">
+      <%= f.label :password_confirmation, t('.password_confirmation') %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: true, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
       <%= invisible_captcha %>
     </div>
 

@@ -246,6 +246,16 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.25.5)
+    mission_control-jobs (1.1.0)
+      actioncable (>= 7.1)
+      actionpack (>= 7.1)
+      activejob (>= 7.1)
+      activerecord (>= 7.1)
+      importmap-rails (>= 1.2.1)
+      irb (~> 1.13)
+      railties (>= 7.1)
+      stimulus-rails
+      turbo-rails
     msgpack (1.8.0)
     name_of_person (1.1.3)
       activesupport (>= 5.2.0)
@@ -466,6 +476,7 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.7)
+    stripe (15.4.0)
     tailwindcss-rails (4.3.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
@@ -550,6 +561,7 @@ DEPENDENCIES
   local_time (~> 3.0)
   madmin (~> 2.0)
   mailbin (~> 1.0)
+  mission_control-jobs
   name_of_person (~> 1.0)
   nokogiri (>= 1.12.5)
   noticed (~> 2.2)
@@ -573,6 +585,7 @@ DEPENDENCIES
   solid_cache
   solid_queue
   stimulus-rails (~> 1.0, >= 1.0.2)
+  stripe (~> 15.0)
   tailwindcss-rails (~> 4.0)
   thruster
   turbo-rails (~> 2.0.3)
@@ -665,6 +678,7 @@ CHECKSUMS
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
   mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
   minitest (5.25.5) sha256=391b6c6cb43a4802bfb7c93af1ebe2ac66a210293f4a3fb7db36f2fc7dc2c756
+  mission_control-jobs (1.1.0) sha256=b13da9cde3344fec7c744b79d2a34c3ecd454f45d4d593d4c968ba762315e84c
   msgpack (1.8.0) sha256=e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732
   name_of_person (1.1.3) sha256=e12291250987ef79c413314f698f15d53e7a602c42231de99c276ef9585bc18c
   net-imap (0.5.9) sha256=d95905321e1bd9f294ffc7ff8697be218eee1ec96c8504c0960964d0a0be33fc
@@ -753,6 +767,7 @@ CHECKSUMS
   sshkit (1.24.0) sha256=9597c1f984778ae9742f2dc839778d57a6a2efb868107046575c52ac7c628e6c
   stimulus-rails (1.3.4) sha256=765676ffa1f33af64ce026d26b48e8ffb2e0b94e0f50e9119e11d6107d67cb06
   stringio (3.1.7) sha256=5b78b7cb242a315fb4fca61a8255d62ec438f58da2b90be66048546ade4507fa
+  stripe (15.4.0) sha256=8feb2b2d3d0bcd7dff57067a364a28ccb6ba4c3f39126d83cf75de0ef1d91290
   tailwindcss-rails (4.3.0) sha256=1e7bf788b8724ba76fec7c43c151a8bca2a39f5d52484aef867f75322df3a6d5
   tailwindcss-ruby (4.1.11) sha256=a244698cfa8beb95e351371d0838808b3f5662901622985d7efcec1fe580a952
   tailwindcss-ruby (4.1.11-aarch64-linux-gnu) sha256=834c29e857951da6828c99e499e95f8d9b25d979491dcf5c82365ee2e72c6a16

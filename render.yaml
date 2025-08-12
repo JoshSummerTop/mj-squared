@@ -2,7 +2,7 @@
 services:
   - type: web
     name: rails
-    plan: free
+    plan: starter
     runtime: ruby
     region: oregon # the region must be consistent across all services for the internal keys to be read
     buildCommand: "./bin/render-build.sh"
@@ -67,21 +67,21 @@ services:
 
 databases:
   - name: primary
-    plan: free
+    plan: Basic-256mb
     region: oregon # the region must be consistent across all services for the internal keys to be read
     ipAllowList: [] # only allow internal connections
 
   - name: solid_cable
-    plan: free
+    plan: Basic-256mb
     region: oregon # the region must be consistent across all services for the internal keys to be read
     ipAllowList: [] # only allow internal connections
 
   - name: solid_cache
-    plan: free
+    plan: Basic-256mb
     region: oregon # the region must be consistent across all services for the internal keys to be read
     ipAllowList: [] # only allow internal connections
 
   - name: solid_queue
-    plan: free
+    plan: Basic-256mb
     region: oregon # the region must be consistent across all services for the internal keys to be read
     ipAllowList: [] # only allow internal connections

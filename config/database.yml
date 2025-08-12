@@ -77,27 +77,24 @@ test:
   database: mj_squared_test
 
 staging:
-  primary: &primary_staging
+  primary:
     <<: *default
-    database: mj_squared_staging
-    username: mj_squared
-    password: <%= ENV["POSTGRES_PASSWORD"] %>
+    url: <%= ENV['DATABASE_URL'] %>
 
   cache:
-    <<: *primary_staging
-    database: mj_squared_staging_cache
+    <<: *default
+    url: <%= ENV['CACHE_DATABASE_URL'] %>
     migrations_paths: db/cache_migrate
-    # Or set CACHE_DATABASE_URL to override
+
   queue:
-    <<: *primary_staging
-    database: mj_squared_staging_queue
+    <<: *default
+    url: <%= ENV['QUEUE_DATABASE_URL'] %>
     migrations_paths: db/queue_migrate
-    # Or set QUEUE_DATABASE_URL to override
+    
   cable:
-    <<: *primary_staging
-    database: mj_squared_staging_cable
+    <<: *default
+    url: <%= ENV['CABLE_DATABASE_URL'] %>
     migrations_paths: db/cable_migrate
-    # Or set CABLE_DATABASE_URL to override
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

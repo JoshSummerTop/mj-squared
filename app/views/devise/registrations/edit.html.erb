@@ -41,11 +41,10 @@
           </div>
         <% end %>
 
-        <%# Theme switcher commented out - using light mode only %>
-        <%# <div class="form-group"> %>
-          <%#= form.label :theme %>
-          <%#= form.select :theme, theme_options, {}, { class: "select" } %>
-        <%# </div> %>
+        <div class="form-group">
+          <%= form.label :theme %>
+          <%= form.select :theme, theme_options, {}, { class: "select" } %>
+        </div>
 
         <div class="mt-2 form-group">
           <%= form.button button_text(t('.update'), disable_with: t(".saving")), class: "btn btn-primary", "data-bridge--form-target": "submit", "data-bridge-title": t('.update') %>

@@ -3,10 +3,10 @@
   <head>
     <%= render "head" %>
   </head>
-  <body data-controller="theme bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>" data-theme-preference-value="<%= current_user&.theme %>">
+  <body data-controller="theme bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>" data-theme-preference-value="test-community">
     <header>
       <%= impersonation_banner %>
-      <%= render "flash" %>
+      <%= render "flash" %> 
       <%= render "navbar" %>
     </header>
 

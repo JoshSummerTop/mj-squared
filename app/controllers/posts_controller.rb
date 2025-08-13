@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy, :like, :unlike]
-  before_action :set_space, only: [:index, :new, :create]
+  before_action :set_space, only: [:new, :create]
+  before_action :set_space_if_present, only: [:index]
   before_action :authenticate_user!, except: [:show]
 
   def show
@@ -10,7 +11,15 @@ class PostsController < ApplicationController
   end
 
   def index
-    @posts = @space.posts.includes(:created_by, :age_group_categories, :likes)
+    if @space.present?
+      # When accessed through a space (e.g., /spaces/1/posts)
+      @posts = @space.posts.includes(:created_by, :age_group_categories, :likes, :space)
+      @page_title = "Posts in #{@space.title}"
+    else
+      # When accessed directly for all community activity (e.g., /posts)
+      @posts = Post.includes(:created_by, :age_group_categories, :likes, :space).limit(20).order(created_at: :desc)
+      @page_title = "All Community Activity"
+    end
   end
 
   def new
@@ -82,8 +91,13 @@ class PostsController < ApplicationController
     @space = Space.friendly.find(params[:space_id])
   end
 
+  def set_space_if_present
+    @space = Space.friendly.find(params[:space_id]) if params[:space_id].present?
+  end
+
   def post_params
     params.require(:post).permit(:title, :content, :image)
   end
 end
+
 

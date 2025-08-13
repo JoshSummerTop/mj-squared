@@ -31,9 +31,7 @@ Rails.application.routes.draw do
   match "/404", via: :all, to: "errors#not_found"
   match "/500", via: :all, to: "errors#internal_server_error"
 
-  # Community Platform Routes
-  get "/community", to: "community#index", as: :community_landing
-
+  # Community Platform Routes - Now the main root
   resources :spaces, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
     member do
       post :join
@@ -42,7 +40,7 @@ Rails.application.routes.draw do
     resources :posts, only: [:index, :new, :create]
   end
 
-  resources :posts, only: [:show, :edit, :update, :destroy], param: :id do
+  resources :posts, only: [:index, :show, :edit, :update, :destroy], param: :id do
     resources :comments, only: [:create, :edit, :update, :destroy]
     member do
       post :like
@@ -50,10 +48,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Dashboard route for authenticated users who want to access the old dashboard
   authenticated :user do
-    root to: "dashboard#show", as: :user_root
-    # Alternate route to use if logged in users should still see public root
-    # get "/dashboard", to: "dashboard#show", as: :user_root
+    get "/dashboard", to: "dashboard#show", as: :user_dashboard
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -64,6 +61,6 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Public marketing homepage
-  root to: "static#index"
+  # Community is now the root of the application
+  root to: "community#index"
 end

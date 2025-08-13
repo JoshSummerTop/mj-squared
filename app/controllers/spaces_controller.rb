@@ -45,7 +45,7 @@ class SpacesController < ApplicationController
     return redirect_to @space, alert: 'Not authorized' unless @space.created_by == current_user
     
     @space.destroy
-    redirect_to community_landing_path, notice: 'Space deleted.'
+    redirect_to root_path, notice: 'Space deleted.'
   end
 
   def join
@@ -82,4 +82,9 @@ class SpacesController < ApplicationController
     params.require(:space).permit(:title, :description, :image, age_group_category_ids: [], community_category_ids: [])
   end
 end
+
+
+
+
+
 

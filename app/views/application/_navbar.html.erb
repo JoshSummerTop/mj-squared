@@ -1,27 +1,36 @@
-<nav class="top-nav" data-controller="toggle">
-  <section class="logo">
-    <%= link_to root_path do %>
+<nav class="flex flex-wrap items-center justify-between px-4 py-2 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-sm font-medium" data-controller="toggle">
+  <div class="flex items-center flex-shrink-0 mr-6">
+    <%= link_to root_path, class: "flex items-center text-gray-700 hover:text-gray-800 dark:text-gray-100 dark:hover:text-gray-300" do %>
       <%= render_svg "logo", styles: "fill-current" %>
       <span class="sr-only"><%= Jumpstart.config.application_name %></span>
     <% end %>
-  </section>
-
-  <section class="nav-container hidden lg:flex" data-toggle-target="toggleable">
-    <nav><%= render "left_nav" %></nav>
-    <nav><%= render "right_nav" %></nav>
-  </section>
-
-  <section class="nav-user-controls">
-    <button type="button" id="sidebar-open" data-action="click->toggle#toggle touch->toggle#toggle">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-      </svg>
+  </div>
+  <div class="block lg:hidden">
+    <button type="button" id="sidebar-open" class="flex items-center p-3 text-gray-500 lg:hidden focus:outline-none focus:text-gray-700" data-action="click->toggle#toggle touch->toggle#toggle">
+      <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path></svg>
     </button>
-
-    <% if user_signed_in? %>
-      <%= render "dev_menu" if Rails.env.development? %>
-      <%= render "notifications" %>
-      <%= render "user_menu" %>
-    <% end %>
-  </section>
+  </div>
+  <div class="flex-grow hidden w-full pb-6 lg:flex lg:w-auto lg:pb-0"
+        data-toggle-target="toggleable"
+        data-transition-enter="transition-all ease-linear duration-300"
+        data-transition-enter-from="opacity-0 h-0"
+        data-transition-enter-to="opacity-100"
+        data-transition-leave="transition-all ease-linear duration-300"
+        data-transition-leave-from="opacity-100"
+        data-transition-leave-to="opacity-0">
+    <div class="lg:flex-grow flex items-center">
+      <%= render "left_nav" %>
+    </div>
+    <div class="flex items-center space-x-4">
+      <%= render "right_nav" %>
+      <% if user_signed_in? %>
+        <div class="hidden lg:inline-block">
+          <%= render "notifications" %>
+        </div>
+        <div class="hidden lg:inline-flex items-center">
+          <%= render "user_menu" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </nav>

@@ -1,57 +1,16 @@
-.tab-nav {
-  display: none;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--base-border-tertiary);
+.tab-active {
+  background: linear-gradient(116deg, #3957F4 22%, #2F87EE 90%);
+  border-radius: 4px 4px 0px 0px;
 
-  @media (min-width: 640px) {
-    display: flex;
-  }
+  a {
+    @apply text-white;
 
-  > * + * {
-    margin-left: 32px;
-  }
-
-  a[data-tabs-target="tab"]{
-    display: inline-flex;
-    padding-bottom: 16px;
-    justify-content: center;
-    align-items: center;
-    white-space: nowrap;
-    padding: 16px 4px;
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 500;
-    border-color: transparent;
-    color: var(--base-text-tertiary);
-    font-style: normal;
-
-    &:hover {
-      color: var(--base-text-secondary);
-      border-bottom: 2px solid var(--base-border-tertiary);
-    }
-
-    &:focus-visible,
+    &:hover,
     &:focus {
-      border-radius: 8px;
-      border: 2px solid var(--base-border-focus);
-      color: var(--base-text-secondary);
-    }
+      background: linear-gradient(308deg, #3957F4 24%, #2F87EE 80%);
+      border-radius: 4px 4px 0px 0px;
 
-    &[data-active="true"]{
-      border-bottom: 2px solid var(--border-primary-hover);
-      color: var(--text-primary);
-      
-      &:hover {
-        color: var(--text-primary-hover);
-        border-bottom: 2px solid var(--border-primary-hover);
-      }
-
-      &:focus-visible,
-      &:focus {
-        border-radius: 8px;
-        border: 2px solid var(--border-primary-hover);
-        color: var(--text-primary);
-      }
+      @apply text-gray-300;
     }
   }
 }

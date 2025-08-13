@@ -1,0 +1,32 @@
+/* Subtle spacing for post content elements */
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.post-content p {
+  margin: 0.75em 0;
+}
+
+.post-content ul,
+.post-content ol {
+  margin: 0.75em 0 0.75em 1.5em;
+  padding-left: 1.25em;
+}
+
+.post-content li {
+  margin-bottom: 0.25em;
+}
+
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 0.75em 0;
+  border-radius: 0.25em;
+  box-shadow: none;
+} 

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Paytone+One&display=swap');
+
 @import "tailwindcss";
 
 @plugin "@tailwindcss/forms";
@@ -8,37 +10,71 @@
 @variant not-hotwire-native (html:not(.hotwire-native) &);
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --color-primary: var(--bg-primary);
+  /* Fonts from test-community */
+  --font-sans: Montserrat, Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Paytone One", Montserrat, ui-sans-serif, system-ui, sans-serif;
+  
+  /* Colors from test-community tailwind.config.js */
+  --color-primary-50: #f8fae6;
+  --color-primary-100: #f1f6cc;
+  --color-primary-200: #e4ee99;
+  --color-primary-300: #d7e666;
+  --color-primary-400: #cadd33;
+  --color-primary-500: #bdd645;
+  --color-primary-600: #a8c13c;
+  --color-primary-700: #8ea032;
+  --color-primary-800: #6b7825;
+  --color-primary-900: #495018;
+  --color-primary: #bdd645;
+  
+  --color-secondary-50: #e0f7fa;
+  --color-secondary-100: #b2ebf2;
+  --color-secondary-200: #80deea;
+  --color-secondary-300: #4dd0e1;
+  --color-secondary-400: #26c6da;
+  --color-secondary-500: #00b5bd;
+  --color-secondary-600: #009da4;
+  --color-secondary-700: #00838f;
+  --color-secondary-800: #006978;
+  --color-secondary-900: #004f56;
+  --color-secondary: #00b5bd;
 }
 
-@import "./themes/dark.css" layer(theme);
-@import "./themes/juicy.css" layer(theme);
-@import "./themes/light.css" layer(theme);
-@import "./themes/jumpstart-dark.css" layer(theme);
-@import "./themes/jumpstart.css" layer(theme);
-
+/* Import all components from test-community */
 @import "./components/base.css" layer(components);
 @import "./components/actiontext.css" layer(components);
 @import "./components/alert.css" layer(components);
 @import "./components/animation.css" layer(components);
 @import "./components/announcements.css" layer(components);
+@import "./components/avatars.css" layer(components);
 @import "./components/buttons.css" layer(components);
-@import "./components/cards.css" layer(components);
+@import "./components/code.css" layer(components);
+@import "./components/connected_accounts.css" layer(components);
 @import "./components/direct_uploads.css" layer(components);
 @import "./components/docs.css" layer(components);
 @import "./components/forms.css" layer(components);
-@import "./components/hotwire_native.css" layer(components);
 @import "./components/iframe.css" layer(components);
-@import "./components/modal.css" layer(components);
 @import "./components/nav.css" layer(components);
 @import "./components/notifications.css" layer(components);
 @import "./components/pagination.css" layer(components);
-@import "./components/pills.css" layer(components);
+@import "./components/strada.css" layer(components);
 @import "./components/tabs.css" layer(components);
-@import "./components/toasts.css" layer(components);
-@import "./components/tooltips.css" layer(components);
-@import "./components/top_nav.css" layer(components);
+@import "./components/trix.css" layer(components);
 @import "./components/typography.css" layer(components);
-@import "./components/wells.css" layer(components);
+@import "./components/util.css" layer(components);
 @import "./components/braintree.css" layer(components);
+@import "./components/community.css" layer(components);
+@import "./components/filters.css" layer(components);
+@import "./components/post_content.css" layer(components);
+
+/* Package imports removed - these packages aren't installed in mj-squared
+@import "flatpickr/dist/flatpickr.css";
+@import "tippy.js/dist/tippy.css";
+@import "tom-select/dist/css/tom-select.css";
+*/
+
+/* Custom styles from test-community */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: 0.25px;
+  font-family: var(--font-heading);
+}

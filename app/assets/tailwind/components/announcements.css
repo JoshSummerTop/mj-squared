@@ -1,19 +1,19 @@
 .announcement-new {
-  background-color: var(--color-blue-100);
-  color: var(--color-blue-600);
+  @apply bg-primary-100 text-primary-600;
 }
 
 .announcement-fix {
-  background-color: var(--color-red-100);
-  color: var(--color-red-600);
+  @apply bg-red-100 text-red-600;
 }
 
 .announcement-update {
-  background-color: var(--color-green-100);
-  color: var(--color-green-600);
+  @apply bg-green-100 text-green-600;
 }
 
 .announcement-improvement {
-  background-color: var(--color-purple-100);
-  color: var(--color-purple-600);
+  @apply bg-purple-100 text-purple-600;
+}
+
+.unread-announcements span:before {
+  @apply inline-block w-2 h-2 mr-1.5 rounded-full bg-red-500 content-[''];
 }

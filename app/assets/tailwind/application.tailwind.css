@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Paytone+One&display=swap');
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+
+/*
+ * Jumpstart Pro default styles
+ * Remove these if you'd like to use TailwindUI which expects a clean slate
+*/
+@import "components/base";
+@import "components/actiontext";
+@import "components/alert";
+@import "components/animation";
+@import "components/announcements";
+@import "components/avatars";
+@import "components/buttons";
+@import "components/code";
+@import "components/connected_accounts";
+@import "components/direct_uploads";
+@import "components/docs";
+@import "components/forms";
+@import "components/iframe";
+@import "components/nav";
+@import "components/notifications";
+@import "components/pagination";
+@import "components/strada";
+@import "components/tabs";
+@import "components/trix";
+@import "components/typography";
+@import "components/util";
+@import "components/braintree";
+@import "components/community";
+@import "components/filters";
+@import "components/post_content";
+@import "tailwindcss/utilities";
+
+@import "flatpickr/dist/flatpickr.css";
+@import "tippy.js/dist/tippy.css";
+@import "tom-select/dist/css/tom-select.css";
+/* @import "swiper/css";
+@import "swiper/css/navigation"; */
+
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: 0.25px;
+  @apply font-heading;
+}

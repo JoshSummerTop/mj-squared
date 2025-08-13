@@ -1,0 +1,121 @@
+<% content_for :title, @page_title %>
+
+<div class="max-w-4xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @page_title %></h1>
+    <% if @space.present? %>
+      <p class="text-gray-600">All posts from <strong><%= @space.title %></strong></p>
+    <% else %>
+      <p class="text-gray-600">Recent posts from across our autism family support community</p>
+    <% end %>
+  </div>
+
+  <% if @posts.any? %>
+    <div class="space-y-6">
+      <% @posts.each do |post| %>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+          <div class="p-6">
+            <!-- Post Header -->
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex-1">
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                  <%= link_to post.title, post_path(post), class: "hover:text-primary-600 transition-colors" %>
+                </h3>
+                
+                <div class="flex items-center text-sm text-gray-500 space-x-4">
+                  <div class="flex items-center">
+                    <% if post.created_by.avatar.attached? %>
+                      <%= image_tag post.created_by.avatar.variant(resize_to_fill: [32, 32]), alt: post.created_by.name, class: "w-8 h-8 rounded-full mr-2" %>
+                    <% else %>
+                      <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-2">
+                        <span class="text-primary-600 font-medium text-sm"><%= post.created_by.name.first.upcase %></span>
+                      </div>
+                    <% end %>
+                    <span class="font-medium"><%= post.created_by.name %></span>
+                  </div>
+                  
+                  <span>•</span>
+                  <time datetime="<%= post.created_at.iso8601 %>"><%= time_ago_in_words(post.created_at) %> ago</time>
+                  
+                  <% unless @space.present? %>
+                    <span>•</span>
+                    <span class="text-primary-600 font-medium">
+                      <%= link_to post.space.title, space_path(post.space), class: "hover:text-primary-700 transition-colors" %>
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
+            <!-- Post Content Preview -->
+            <div class="prose prose-sm max-w-none mb-4">
+              <p class="text-gray-700 leading-relaxed">
+                <%= truncate(strip_tags(post.content), length: 200, separator: ' ') %>
+              </p>
+            </div>
+
+            <!-- Age Groups -->
+            <% if post.age_group_categories.any? %>
+              <div class="flex flex-wrap gap-2 mb-4">
+                <% post.age_group_categories.each do |age_group| %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800">
+                    <%= age_group.name %>
+                  </span>
+                <% end %>
+              </div>
+            <% end %>
+
+            <!-- Post Footer -->
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div class="flex items-center space-x-6 text-sm text-gray-500">
+                <span class="flex items-center">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                  </svg>
+                  <%= post.likes.count %> likes
+                </span>
+                <span class="flex items-center">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                  </svg>
+                  <%= post.comments.count %> comments
+                </span>
+              </div>
+              
+              <%= link_to "Read more", post_path(post), class: "text-primary-600 hover:text-primary-700 font-medium text-sm transition-colors" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Pagination placeholder -->
+    <div class="mt-8 text-center">
+      <p class="text-gray-500 text-sm">Showing recent community activity</p>
+    </div>
+  <% else %>
+    <div class="text-center py-12">
+      <div class="max-w-md mx-auto">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">No posts yet</h3>
+        <p class="mt-2 text-gray-500">
+          <% if @space.present? %>
+            Be the first to start a conversation in this space!
+          <% else %>
+            The community is just getting started. Check back soon for new posts!
+          <% end %>
+        </p>
+        <% if @space.present? %>
+          <div class="mt-6">
+            <%= link_to "Create First Post", new_space_post_path(@space), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+
+

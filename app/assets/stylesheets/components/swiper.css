@@ -1,0 +1,223 @@
+/* Production-grade Swiper component styles */
+
+/* Base swiper container */
+.community-swiper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-bottom: 20px; /* Space for pagination */
+}
+
+/* Swiper wrapper and slides */
+.community-swiper .swiper-slide {
+  height: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Space cards specific styling */
+.space-card-slide {
+  width: 320px; /* Fixed width for consistent spacing */
+  min-height: 280px;
+}
+
+.all-spaces-slide {
+  width: 360px; /* Slightly wider for all spaces cards */
+  min-height: 200px;
+}
+
+/* Navigation buttons - Modern design */
+.community-swiper .swiper-button-next,
+.community-swiper .swiper-button-prev {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  color: #374151;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+}
+
+.community-swiper .swiper-button-next:hover,
+.community-swiper .swiper-button-prev:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #3b82f6;
+  color: #3b82f6;
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.community-swiper .swiper-button-prev {
+  left: -22px;
+}
+
+.community-swiper .swiper-button-next {
+  right: -22px;
+}
+
+/* Custom arrow icons */
+.community-swiper .swiper-button-next::after,
+.community-swiper .swiper-button-prev::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.community-swiper .swiper-button-prev::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 19l-7-7 7-7'/%3E%3C/svg%3E");
+}
+
+.community-swiper .swiper-button-next::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 5l7 7-7 7'/%3E%3C/svg%3E");
+}
+
+/* Pagination dots */
+.community-swiper .swiper-pagination {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.community-swiper .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: #d1d5db;
+  border-radius: 50%;
+  opacity: 1;
+  transition: all 0.3s ease;
+  margin: 0 4px;
+}
+
+.community-swiper .swiper-pagination-bullet-active {
+  background: #3b82f6;
+  transform: scale(1.25);
+}
+
+/* Scrollbar */
+.community-swiper .swiper-scrollbar {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  height: 4px;
+  background: #f3f4f6;
+  border-radius: 2px;
+  margin-top: 12px;
+}
+
+.community-swiper .swiper-scrollbar-drag {
+  background: #3b82f6;
+  border-radius: 2px;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Disable navigation when not needed */
+.community-swiper .swiper-button-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Loading state */
+.community-swiper.swiper-loading {
+  opacity: 0.7;
+}
+
+.community-swiper.swiper-loading .swiper-slide {
+  background: #f9fafb;
+  border-radius: 8px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .community-swiper .swiper-button-next,
+  .community-swiper .swiper-button-prev {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .community-swiper .swiper-button-prev {
+    left: -18px;
+  }
+  
+  .community-swiper .swiper-button-next {
+    right: -18px;
+  }
+  
+  .space-card-slide {
+    width: 280px;
+  }
+  
+  .all-spaces-slide {
+    width: 300px;
+  }
+}
+
+/* Focus styles for accessibility */
+.community-swiper .swiper-button-next:focus,
+.community-swiper .swiper-button-prev:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .community-swiper .swiper-button-next,
+  .community-swiper .swiper-button-prev {
+    background: white;
+    border: 2px solid black;
+    color: black;
+  }
+  
+  .community-swiper .swiper-pagination-bullet {
+    background: #666;
+  }
+  
+  .community-swiper .swiper-pagination-bullet-active {
+    background: black;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .community-swiper .swiper-button-next,
+  .community-swiper .swiper-button-prev,
+  .community-swiper .swiper-pagination-bullet {
+    transition: none;
+  }
+  
+  .community-swiper .swiper-button-next:hover,
+  .community-swiper .swiper-button-prev:hover {
+    transform: translateY(-50%);
+  }
+}
+
+
+

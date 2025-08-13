@@ -426,9 +426,17 @@ button[aria-label="Notifications"] svg {
 .account-menu {
   .name {
     font-size: 14px;
-    max-width: 7rem;
+    max-width: 4rem;
     text-overflow: ellipsis;
     overflow: hidden;
     text-wrap: nowrap;
+    
+    @media (min-width: 640px) {
+      max-width: 6rem;
+    }
+    
+    @media (min-width: 1024px) {
+      max-width: 7rem;
+    }
   }
 }

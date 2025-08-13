@@ -1,7 +1,7 @@
 <div class="container mx-auto px-4 py-8 max-w-4xl">
   <!-- Breadcrumb -->
   <nav class="text-sm mb-6 text-gray-600">
-    <%= link_to 'Community', community_landing_path, class: 'text-primary hover:underline' %> / 
+    <%= link_to 'Community', root_path, class: 'text-primary hover:underline' %> / 
     <span class="text-gray-900"><%= @space.title %></span>
   </nav>
 
@@ -15,7 +15,7 @@
         <% if @space.community_categories.any? %>
           <div class="flex flex-wrap gap-2 mb-2">
             <% @space.community_categories.each do |category| %>
-              <%= link_to category.name, community_landing_path(tab: category.slug), 
+              <%= link_to category.name, root_path(tab: category.slug), 
                   class: 'px-2 py-1 bg-primary-50 text-primary-700 text-xs rounded-full hover:underline' %>
             <% end %>
           </div>
@@ -117,4 +117,9 @@
     <% end %>
   </div>
 </div>
+
+
+
+
+
 

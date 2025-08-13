@@ -1,104 +1,200 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold">Community Spaces</h1>
-    <% if user_signed_in? %>
+<div class="container mx-auto p-4">
+  <% if user_signed_in? && current_user.admin? && CommunityCategory.any? %>
+    <div class="mb-4 flex justify-end">
       <%= link_to 'Create Space', new_space_path, class: 'btn btn-primary' %>
-    <% end %>
-  </div>
-
-  <!-- Category Tabs -->
-  <div class="flex flex-wrap gap-2 mb-8">
-    <%= link_to community_landing_path, 
-        class: "px-4 py-2 rounded-lg border #{params[:tab].blank? ? 'bg-primary text-white border-primary' : 'border-gray-300 hover:border-primary'}" do %>
-      All
-    <% end %>
-    <% @categories.each do |category| %>
-      <%= link_to community_landing_path(tab: category.slug), 
-          class: "px-4 py-2 rounded-lg border #{params[:tab] == category.slug ? 'bg-primary text-white border-primary' : 'border-gray-300 hover:border-primary'}" do %>
-        <%= category.name %>
-      <% end %>
-    <% end %>
-  </div>
-
-  <!-- Your Spaces (if logged in and has spaces) -->
-  <% if user_signed_in? && @joined_spaces.any? %>
-    <div class="mb-12">
-      <h2 class="text-2xl font-semibold mb-4">Your Spaces</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <% @joined_spaces.each do |space| %>
-          <%= link_to space_path(space), class: "block bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200" do %>
-            <div class="p-4">
-              <% if space.image.attached? %>
-                <%= image_tag space.image, class: "w-full h-32 object-cover rounded mb-4" %>
-              <% else %>
-                <div class="w-full h-32 bg-gray-200 rounded mb-4 flex items-center justify-center">
-                  <span class="text-gray-500">No Image</span>
-                </div>
-              <% end %>
-              <h3 class="text-lg font-semibold mb-2"><%= space.title %></h3>
-              <div class="flex justify-between text-sm text-gray-600">
-                <span><%= pluralize(space.memberships.count, 'member') %></span>
-                <span><%= pluralize(space.posts.count, 'post') %></span>
-              </div>
-            </div>
-          <% end %>
-        <% end %>
-      </div>
     </div>
   <% end %>
-
-  <!-- Age Group Filters -->
-  <div class="mb-6">
-    <h2 class="text-2xl font-semibold mb-4">All Spaces</h2>
-    <div class="flex flex-wrap gap-2">
-      <%= link_to community_landing_path(tab: params[:tab]), 
-          class: "px-3 py-1 text-sm rounded-full #{params[:age_group].blank? ? 'bg-secondary text-white' : 'bg-gray-100 hover:bg-gray-200'}" do %>
-        All Ages
-      <% end %>
-      <% @age_groups.each do |age_group| %>
-        <%= link_to community_landing_path(tab: params[:tab], age_group: age_group.slug), 
-            class: "px-3 py-1 text-sm rounded-full #{params[:age_group] == age_group.slug ? 'bg-secondary text-white' : 'bg-gray-100 hover:bg-gray-200'}" do %>
-          <%= age_group.name %>
-        <% end %>
+  
+  <div class="my-8">
+    <h1 class="h1 mb-6">Community Spaces</h1>
+    <div class="filter-tabs">
+      <%= link_to 'All', root_path, class: "filter-tab#{params[:tab].blank? ? ' active' : ''}", aria: { current: params[:tab].blank? } %>
+      <% @categories.each do |cat| %>
+        <%= link_to cat.name, root_path(tab: cat.slug), class: "filter-tab#{params[:tab].to_s == cat.slug.to_s ? ' active' : ''}", aria: { current: params[:tab].to_s == cat.slug.to_s } %>
       <% end %>
     </div>
-  </div>
 
-  <!-- All Spaces Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <% @spaces.each do |space| %>
-      <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200">
-        <%= link_to space_path(space), class: "block" do %>
-          <% if space.image.attached? %>
-            <%= image_tag space.image, class: "w-full h-48 object-cover rounded-t-lg" %>
-          <% else %>
-            <div class="w-full h-48 bg-gray-200 rounded-t-lg flex items-center justify-center">
-              <span class="text-gray-500">No Image</span>
+    <% if user_signed_in? && @joined_spaces.any? %>
+      <section class="mb-8">
+        <h2 class="h3 mb-6">Your Spaces</h2>
+        
+        <!-- Your Spaces Swiper -->
+        <div class="relative" style="margin: 0 60px;">
+          <div data-controller="swiper" 
+               data-swiper-target="wrapper"
+               class="swiper-container overflow-hidden">
+            <div class="swiper-wrapper flex transition-transform duration-300 ease-out"
+                 data-swiper-target="wrapper">
+              <% @joined_spaces.each do |space| %>
+                <div class="swiper-slide flex-shrink-0" data-swiper-target="slide">
+                  <%= link_to space_path(space), class: "your-space-card block h-full bg-white rounded-lg border border-primary-500 overflow-hidden transition-all duration-200 hover:shadow-lg hover:scale-[1.02]" do %>
+                    <div class="aspect-video relative overflow-hidden">
+                      <% if space.image.attached? %>
+                        <%= image_tag space.image, class: 'w-full h-full object-cover', alt: space.title %>
+                      <% else %>
+                        <%= image_tag 'community_placeholder.jpg', class: 'w-full h-full object-cover', alt: space.title %>
+                      <% end %>
+                    </div>
+                    <div class="p-4 flex flex-col justify-between h-32">
+                      <div>
+                        <h3 class="h5 text-gray-900 mb-2 line-clamp-2">
+                          <%= space.title %>
+                        </h3>
+                      </div>
+                      <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                          <div class="flex -space-x-2">
+                            <% space.memberships.includes(:user).limit(3).each_with_index do |membership, idx| %>
+                              <div class="relative w-8 h-8 rounded-full overflow-hidden border-2 border-white" style="z-index: <%= 30 - idx %>">
+                                <% if membership.user.avatar.attached? %>
+                                  <%= image_tag membership.user.avatar, class: 'w-full h-full object-cover', alt: membership.user.name %>
+                                <% else %>
+                                  <%= image_tag "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(membership.user.email.downcase)}?s=32&d=mp", 
+                                      class: 'w-full h-full object-cover', alt: membership.user.name %>
+                                <% end %>
+                              </div>
+                            <% end %>
+                            <% if space.memberships.count > 3 %>
+                              <div class="relative w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center border-2 border-white text-white text-xs font-medium" style="z-index: 10">
+                                +<%= space.memberships.count - 3 %>
+                              </div>
+                            <% end %>
+                          </div>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 text-secondary-800">
+                          <%= pluralize(space.posts.count, 'post') %>
+                        </span>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
             </div>
-          <% end %>
-          <div class="p-4">
-            <h3 class="text-xl font-semibold mb-2"><%= space.title %></h3>
-            <p class="text-gray-600 mb-4"><%= truncate(space.description, length: 100) %></p>
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-500">
-                <%= pluralize(space.memberships.count, 'member') %>
-              </span>
-              <span class="text-primary font-medium">View Space →</span>
+          </div>
+          
+          <!-- Navigation Buttons -->
+          <button data-action="click->swiper#prev" 
+                  class="swiper-button-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:border-primary-200 hover:shadow-xl transition-all duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          
+          <button data-action="click->swiper#next"
+                  class="swiper-button-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:border-primary-200 hover:shadow-xl transition-all duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+        
+        <div class="flex justify-end mt-6">
+          <%= link_to 'View All Community Activity', posts_path, 
+              class: 'text-primary-600 font-medium hover:text-primary-700 transition-colors duration-200 flex items-center gap-2' %>
+        </div>
+      </section>
+    <% end %>
+
+    <section>
+      <h2 class="h3 mb-6">All Spaces</h2>
+      
+      <!-- Age Group Filter -->
+      <div class="flex flex-wrap gap-2 mb-6">
+        <%= link_to 'All', root_path(tab: params[:tab]), 
+            class: "inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 #{params[:age_group].blank? ? 'bg-primary-100 text-primary-800 ring-1 ring-primary-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" %>
+        <% @age_groups.each do |age| %>
+          <%= link_to age.name, root_path(tab: params[:tab], age_group: age.slug), 
+              class: "inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 #{params[:age_group].to_s == age.slug.to_s ? 'bg-primary-100 text-primary-800 ring-1 ring-primary-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" %>
+        <% end %>
+      </div>
+      
+      <!-- All Spaces Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <% @spaces.each do |space| %>
+          <div class="community-card bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-200">
+            <div class="flex">
+              <!-- Image -->
+              <div class="w-32 h-32 flex-shrink-0 relative overflow-hidden">
+                <% if space.image.attached? %>
+                  <%= image_tag space.image, class: 'w-full h-full object-cover', alt: space.title %>
+                <% else %>
+                  <%= image_tag 'community_placeholder.jpg', class: 'w-full h-full object-cover', alt: space.title %>
+                <% end %>
+              </div>
+              
+              <!-- Content -->
+              <div class="flex-1 p-4 flex flex-col justify-between">
+                <div class="mb-3">
+                  <h3 class="h5 text-gray-900 mb-2">
+                    <%= space.title %>
+                  </h3>
+                  <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                    <%= truncate(space.description, length: 140) %>
+                  </p>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    <%= pluralize(space.memberships.count, 'member') %>
+                  </span>
+                  <%= link_to 'View Space', space_path(space), 
+                      class: 'inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200' %>
+                </div>
+              </div>
             </div>
           </div>
         <% end %>
       </div>
-    <% end %>
-  </div>
-
-  <% if @spaces.empty? %>
-    <div class="text-center py-12">
-      <p class="text-gray-500 text-lg">No spaces found.</p>
-      <% if user_signed_in? %>
-        <p class="text-gray-400 mt-2">Be the first to create one!</p>
-        <%= link_to 'Create First Space', new_space_path, class: 'btn btn-primary mt-4' %>
+      
+      <% if @spaces.empty? %>
+        <div class="text-center py-12">
+          <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <h3 class="h4 text-gray-900 mb-2">No spaces found</h3>
+          <p class="text-gray-600">Try adjusting your filters or check back later for new spaces.</p>
+        </div>
       <% end %>
-    </div>
-  <% end %>
+    </section>
+  </div>
 </div>
 
+<style>
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Smooth hover animations */
+.your-space-card {
+  transform-origin: center;
+}
+
+.community-card {
+  transform-origin: center;
+}
+
+/* Navigation button states */
+.swiper-button-prev[style*="opacity: 0.3"],
+.swiper-button-next[style*="opacity: 0.3"] {
+  cursor: not-allowed;
+}
+
+.swiper-button-prev[style*="opacity: 0.3"]:hover,
+.swiper-button-next[style*="opacity: 0.3"]:hover {
+  transform: translateY(-50%) !important;
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+}
+</style>

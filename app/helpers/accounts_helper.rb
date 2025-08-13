@@ -1,13 +1,28 @@
 module AccountsHelper
-  def account_avatar(account, size: "size-8", image_size: 48, **options)
-    classes = options[:class] || "rounded-full shrink-0 object-cover"
+  def account_avatar(account, options = {})
+    size = options[:size] || 48
+    classes = options[:class]
 
     if account.personal? && account.owner?(current_user)
-      image_tag(avatar_url_for(current_user, options), class: [classes, size], alt: account.name)
+      image_tag(
+        avatar_url_for(current_user, options),
+        class: classes,
+        alt: account.name
+      )
     elsif account.avatar.attached? && account.avatar.variable?
-      image_tag(account.avatar.variant(resize_to_fit: [image_size, image_size]), class: [classes, size], alt: account.name)
+      image_tag(
+        account.avatar.variant(resize_to_fit: [size, size]),
+        class: classes,
+        alt: account.name
+      )
     else
-      image_tag(ui_avatar_url(name: account.name), class: [classes, size], alt: account.name)
+      content = tag.span(account.name.to_s.first, class: "initials")
+
+      if options[:include_user]
+        content += image_tag(avatar_url_for(current_user), class: "avatar-small")
+      end
+
+      tag.span(content, class: "avatar bg-primary-500 #{classes}")
     end
   end
 

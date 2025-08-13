@@ -14,3 +14,6 @@
 # ActiveSupport::Inflector.inflections(:en) do |inflect|
 #   inflect.acronym "RESTful"
 # end
+ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.irregular "age_group_category", "age_group_categories"
+end

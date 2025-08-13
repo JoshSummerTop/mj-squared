@@ -38,3 +38,8 @@ class CommunityController < ApplicationController
   end
 end
 
+
+
+
+
+

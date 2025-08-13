@@ -1,12 +1,14 @@
 class CreatePosts < ActiveRecord::Migration[8.0]
   def change
-    create_table :posts do |t|
-      t.string :title, null: false
-      t.text :content
-      t.references :space, null: false, foreign_key: true
-      t.references :created_by, null: false, foreign_key: { to_table: :users }
+    unless table_exists?(:posts)
+      create_table :posts do |t|
+        t.string :title, null: false
+        t.text :content
+        t.references :space, null: false, foreign_key: true
+        t.references :created_by, null: false, foreign_key: { to_table: :users }
 
-      t.timestamps
+        t.timestamps
+      end
     end
   end
 end

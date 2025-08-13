@@ -23,24 +23,22 @@ class Space < ApplicationRecord
   def attach_placeholder_image_if_needed
     return if image.attached?
     
-    begin
-      placeholder_images = ['placeholder.jpg', 'placeholder_2.jpg', 'placeholder_3.jpg']
-      selected_placeholder = placeholder_images.sample
-      
-      placeholder_path = Rails.root.join('app', 'assets', 'images', 'placeholders', selected_placeholder)
-      
-      # Fallback to development path if precompiled assets aren't available
-      if File.exist?(placeholder_path)
+    placeholder_images = ['placeholder.jpg', 'placeholder_2.jpg', 'placeholder_3.jpg']
+    selected_placeholder = placeholder_images.sample
+    placeholder_path = Rails.root.join('app', 'assets', 'images', 'placeholders', selected_placeholder)
+    
+    if File.exist?(placeholder_path)
+      begin
         image.attach(
           io: File.open(placeholder_path),
           filename: selected_placeholder,
           content_type: 'image/jpeg'
         )
-      else
-        Rails.logger.warn "Placeholder image not found: #{placeholder_path}"
+      rescue => e
+        Rails.logger.error "Error attaching placeholder image: #{e.message}"
       end
-    rescue => e
-      Rails.logger.error "Error attaching placeholder image: #{e.message}"
+    else
+      Rails.logger.warn "Placeholder image not found: #{placeholder_path}"
     end
   end
 

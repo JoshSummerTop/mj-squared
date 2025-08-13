@@ -1,11 +1,13 @@
 class CreateCommunityCategories < ActiveRecord::Migration[8.0]
   def change
-    create_table :community_categories do |t|
-      t.string :name, null: false
-      t.string :slug, null: false
+    unless table_exists?(:community_categories)
+      create_table :community_categories do |t|
+        t.string :name
+        t.string :slug
 
-      t.timestamps
+        t.timestamps
+      end
+      add_index :community_categories, :slug, unique: true
     end
-    add_index :community_categories, :slug, unique: true
   end
 end

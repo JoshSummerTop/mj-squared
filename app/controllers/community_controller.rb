@@ -27,15 +27,30 @@ class CommunityController < ApplicationController
       @spaces = @spaces.joins("INNER JOIN age_group_categories_spaces ags ON ags.space_id = spaces.id")
                        .where("ags.age_group_category_id = ?", selected_age_group.id)
     end
-    @spaces = @spaces.order(created_at: :desc).distinct
+    
+    # Pagination for infinite scroll
+    page = (params[:page] || 1).to_i
+    per_page = 10
+    
+    # Apply ordering first, then get count and pagination
+    @spaces = @spaces.order(created_at: :desc)
+    total_spaces = @spaces.distinct.count
+    
+    # Apply pagination
+    @spaces = @spaces.distinct.offset((page - 1) * per_page).limit(per_page)
+    @current_page = page
+    
+    # Check if there are more pages
+    @has_more_pages = (page * per_page) < total_spaces
 
-    # Age groups available based on selected categories
+    # Age groups available based on selected categories (simplified)
     if selected_category
-      @age_groups = AgeGroupCategory.joins(spaces: :community_categories)
-                                   .where(community_categories: { id: selected_category.id })
+      @age_groups = AgeGroupCategory.joins("INNER JOIN age_group_categories_spaces ags ON ags.age_group_category_id = age_group_categories.id")
+                                   .joins("INNER JOIN community_categories_spaces ccs ON ccs.space_id = ags.space_id") 
+                                   .where("ccs.community_category_id = ?", selected_category.id)
                                    .distinct
     else
-      @age_groups = AgeGroupCategory.joins(:spaces).distinct
+      @age_groups = AgeGroupCategory.all
     end
 
     # Joined spaces filtered by selected categories

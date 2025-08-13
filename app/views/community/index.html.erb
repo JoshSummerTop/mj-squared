@@ -179,8 +179,8 @@
         </div>
         
         <!-- Actual Content -->
-        <div id="spaces-content" class="opacity-0">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div id="spaces-content" class="opacity-100">
+          <div id="spaces-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <% @spaces.each do |space| %>
           <div class="community-card-custom w-full h-52">
             <div class="community-card-inner">
@@ -227,17 +227,36 @@
         <% end %>
       </div>
       
-      <% if @spaces.empty? %>
-        <div class="text-center py-12">
-          <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
           </div>
-          <h3 class="h4 text-gray-900 mb-2">No spaces found</h3>
-          <p class="text-gray-600">Try adjusting your filters or check back later for new spaces.</p>
-        </div>
-      <% end %>
+          
+          <% if @spaces.empty? && @current_page == 1 %>
+            <div class="text-center py-12">
+              <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <h3 class="h4 text-gray-900 mb-2">No spaces found</h3>
+              <p class="text-gray-600">Try adjusting your filters or check back later for new spaces.</p>
+            </div>
+          <% end %>
+          
+          <!-- Load More Button (for infinite scroll) -->
+          <% if @has_more_pages %>
+            <div id="load-more-container" class="text-center py-6">
+              <button id="load-more-btn" 
+                      class="btn btn-primary"
+                      data-page="<%= @current_page + 1 %>"
+                      data-tab="<%= params[:tab] %>"
+                      data-age-group="<%= params[:age_group] %>">
+                Load More Spaces
+              </button>
+              <div id="load-more-spinner" class="hidden mt-4">
+                <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
+                <span class="ml-2 text-gray-600">Loading...</span>
+              </div>
+            </div>
+          <% end %>
         </div>
       </turbo-frame>
     </section>
@@ -322,50 +341,89 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   function initializeImageLoading() {
-    const images = document.querySelectorAll('[data-space-image]');
-    const spacesContent = document.getElementById('spaces-content');
     const spacesLoading = document.getElementById('spaces-loading');
     
-    if (!images.length) {
-      if (spacesContent) spacesContent.classList.add('opacity-100');
-      return;
-    }
+    // Always hide skeleton loading since content is now visible immediately
+    if (spacesLoading) spacesLoading.classList.add('hidden');
+    
+    // Individual image loading can still happen in background with lazy loading
+  }
 
-    // Show skeleton loading initially
-    if (spacesLoading) spacesLoading.classList.remove('hidden');
-    if (spacesContent) spacesContent.classList.add('opacity-0');
-
-    let loadedCount = 0;
-    const totalImages = images.length;
-
-    function checkAllImagesLoaded() {
-      loadedCount++;
-      if (loadedCount >= totalImages) {
-        // All images loaded, show content
-        setTimeout(() => {
-          if (spacesLoading) spacesLoading.classList.add('hidden');
-          if (spacesContent) {
-            spacesContent.classList.remove('opacity-0');
-            spacesContent.classList.add('opacity-100');
+  function initializeInfiniteScroll() {
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const loadMoreSpinner = document.getElementById('load-more-spinner');
+    const spacesGrid = document.getElementById('spaces-grid');
+    
+    if (!loadMoreBtn) return;
+    
+    loadMoreBtn.addEventListener('click', async function() {
+      const page = this.dataset.page;
+      const tab = this.dataset.tab;
+      const ageGroup = this.dataset.ageGroup;
+      
+      // Show loading state
+      loadMoreBtn.classList.add('hidden');
+      loadMoreSpinner.classList.remove('hidden');
+      
+      try {
+        // Build URL with params
+        let url = `/?page=${page}`;
+        if (tab && tab !== 'null') url += `&tab=${tab}`;
+        if (ageGroup && ageGroup !== 'null') url += `&age_group=${ageGroup}`;
+        
+        const response = await fetch(url, {
+          headers: {
+            'Accept': 'text/html',
+            'X-Requested-With': 'XMLHttpRequest'
           }
-        }, 200); // Small delay for smooth transition
-      }
-    }
-
-    images.forEach(img => {
-      if (img.complete) {
-        checkAllImagesLoaded();
-      } else {
-        img.addEventListener('load', checkAllImagesLoaded);
-        img.addEventListener('error', checkAllImagesLoaded); // Handle failed loads
+        });
+        
+        if (response.ok) {
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          
+          // Extract new spaces from response
+          const newSpaces = doc.querySelectorAll('#spaces-grid > .community-card-custom');
+          const newLoadMoreContainer = doc.querySelector('#load-more-container');
+          
+          // Append new spaces
+          newSpaces.forEach(space => {
+            spacesGrid.appendChild(space);
+          });
+          
+          // Update load more button or remove it
+          const currentLoadMoreContainer = document.getElementById('load-more-container');
+          if (currentLoadMoreContainer) {
+            currentLoadMoreContainer.remove();
+          }
+          
+          if (newLoadMoreContainer) {
+            spacesGrid.parentNode.appendChild(newLoadMoreContainer);
+            initializeInfiniteScroll(); // Re-initialize for new button
+          }
+          
+          // Initialize image loading for new images
+          initializeImageLoading();
+        }
+      } catch (error) {
+        console.error('Error loading more spaces:', error);
+        // Show error state
+        loadMoreSpinner.classList.add('hidden');
+        loadMoreBtn.textContent = 'Error - Try Again';
+        loadMoreBtn.classList.remove('hidden');
       }
     });
   }
 
   // Initialize on page load
   initializeImageLoading();
+  initializeInfiniteScroll();
 
   // Re-initialize after turbo frame updates
-  document.addEventListener('turbo:frame-load', initializeImageLoading);
+  document.addEventListener('turbo:frame-load', function() {
+    initializeImageLoading();
+    initializeInfiniteScroll();
+  });
 });
 </script>

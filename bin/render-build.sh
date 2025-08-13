@@ -13,9 +13,4 @@ done
 bundle install
 bundle exec rails assets:precompile
 bundle exec rails assets:clean
-[[ $SKIP_MIGRATE == true ]] || {
-  bundle exec rails db:drop:primary
-  bundle exec rails db:create
-  bundle exec rails db:migrate
-  bundle exec rails db:seed
-}
+[[ $SKIP_MIGRATE == true ]] || bundle exec rails db:prepare

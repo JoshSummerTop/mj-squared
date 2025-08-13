@@ -7,15 +7,19 @@
   
   <div class="my-8">
     <h1 class="h1 mb-6">Community Spaces</h1>
-    <div class="filter-tabs">
-      <%= link_to 'All', root_path, class: "filter-tab#{params[:tab].blank? ? ' active' : ''}", aria: { current: params[:tab].blank? } %>
-      <% @categories.each do |cat| %>
-        <%= link_to cat.name, root_path(tab: cat.slug), class: "filter-tab#{params[:tab].to_s == cat.slug.to_s ? ' active' : ''}", aria: { current: params[:tab].to_s == cat.slug.to_s } %>
-      <% end %>
-    </div>
-
-    <% if user_signed_in? && @joined_spaces.any? %>
-      <section class="mb-8">
+    
+    <turbo-frame id="community_content">
+      <div class="filter-tabs">
+        <%= link_to 'All', root_path(tab: 'all', age_group: params[:age_group]), class: "filter-tab#{params[:tab] == 'all' ? ' active' : ''}", aria: { current: params[:tab] == 'all' }, data: { turbo_frame: "community_content" } %>
+        <% @categories.each do |cat| %>
+          <%= link_to cat.name, root_path(tab: cat.slug, age_group: params[:age_group]), 
+              class: "filter-tab#{params[:tab] == cat.slug ? ' active' : ''}", 
+              aria: { current: params[:tab] == cat.slug }, 
+              data: { turbo_frame: "community_content" } %>
+        <% end %>
+      </div>
+      <% if user_signed_in? && @joined_spaces.any? %>
+        <section class="mb-8">
         <h2 class="h3 mb-6">Your Spaces</h2>
         
         <!-- Your Spaces Swiper -->
@@ -40,6 +44,38 @@
                         <h3 class="h5 text-gray-900 mb-2 line-clamp-2">
                           <%= space.title %>
                         </h3>
+                        
+                        <!-- Community Categories -->
+                        <% if space.community_categories.any? %>
+                          <div class="flex flex-wrap gap-1 mb-1">
+                            <% space.community_categories.first(2).each do |category| %>
+                              <span class="px-2 py-0.5 bg-primary-50 text-primary-700 text-xs rounded-full font-medium">
+                                <%= category.name %>
+                              </span>
+                            <% end %>
+                            <% if space.community_categories.count > 2 %>
+                              <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                                +<%= space.community_categories.count - 2 %>
+                              </span>
+                            <% end %>
+                          </div>
+                        <% end %>
+                        
+                        <!-- Age Group Categories (separate row) -->
+                        <% if space.age_group_categories.any? %>
+                          <div class="flex flex-wrap gap-1 mb-1">
+                            <% space.age_group_categories.first(2).each do |age_group| %>
+                              <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-xs rounded-full font-medium">
+                                <%= age_group.name %>
+                              </span>
+                            <% end %>
+                            <% if space.age_group_categories.count > 2 %>
+                              <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                                +<%= space.age_group_categories.count - 2 %>
+                              </span>
+                            <% end %>
+                          </div>
+                        <% end %>
                       </div>
                       <div class="flex justify-between items-center">
                         <div class="flex items-center">
@@ -98,47 +134,92 @@
     <section>
       <h2 class="h3 mb-6">All Spaces</h2>
       
-      <!-- Age Group Filter -->
-      <div class="flex flex-wrap gap-2 mb-6">
-        <%= link_to 'All', root_path(tab: params[:tab]), 
-            class: "inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 #{params[:age_group].blank? ? 'bg-primary-100 text-primary-800 ring-1 ring-primary-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" %>
-        <% @age_groups.each do |age| %>
-          <%= link_to age.name, root_path(tab: params[:tab], age_group: age.slug), 
-              class: "inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 #{params[:age_group].to_s == age.slug.to_s ? 'bg-primary-100 text-primary-800 ring-1 ring-primary-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" %>
-        <% end %>
-      </div>
-      
-      <!-- All Spaces Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <turbo-frame id="all_spaces_content">
+        <div class="filter-badges">
+          <!-- SIMPLE TEST: params[:age_group] = "<%= params[:age_group] %>" -->
+          <%= link_to 'All', root_path(tab: params[:tab], age_group: 'all'), class: params[:age_group] == 'all' ? "filter-badge active" : "filter-badge", data: { turbo_frame: "all_spaces_content" } %>
+          <% @age_groups.each do |age| %>
+            <%= link_to age.name, root_path(tab: params[:tab], age_group: age.slug), 
+                class: params[:age_group] == age.slug ? "filter-badge active" : "filter-badge", 
+                data: { turbo_frame: "all_spaces_content" } %>
+          <% end %>
+        </div>
+        <!-- Skeleton Loading State -->
+        <div id="spaces-loading" class="hidden">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <% 4.times do %>
+              <div class="community-card-custom w-full h-52">
+                <div class="skeleton-card">
+                  <div class="w-16 h-16 skeleton-text m-4 flex-shrink-0"></div>
+                  <div class="community-card-content flex-1">
+                    <div class="h-6 skeleton-text mb-2"></div>
+                    <!-- Skeleton community categories -->
+                    <div class="flex gap-1 mb-1">
+                      <div class="h-4 w-16 skeleton-button"></div>
+                      <div class="h-4 w-12 skeleton-button"></div>
+                    </div>
+                    <!-- Skeleton age categories -->
+                    <div class="flex gap-1 mb-2">
+                      <div class="h-4 w-20 skeleton-button"></div>
+                      <div class="h-4 w-24 skeleton-button"></div>
+                    </div>
+                    <div class="space-y-2">
+                      <div class="h-4 skeleton-text"></div>
+                      <div class="h-4 skeleton-text w-3/4"></div>
+                    </div>
+                    <div class="community-card-actions mt-4">
+                      <div class="h-8 w-20 skeleton-button"></div>
+                      <div class="h-8 w-24 skeleton-button"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <!-- Actual Content -->
+        <div id="spaces-content" class="opacity-0">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <% @spaces.each do |space| %>
-          <div class="community-card bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-200">
-            <div class="flex">
-              <!-- Image -->
-              <div class="w-32 h-32 flex-shrink-0 relative overflow-hidden">
+          <div class="community-card-custom w-full h-52">
+            <div class="community-card-inner">
+              <div class="relative community-card-img-wrapper">
                 <% if space.image.attached? %>
-                  <%= image_tag space.image, class: 'w-full h-full object-cover', alt: space.title %>
+                  <%= image_tag space.image, class: 'community-card-img', width: 104, height: 104, loading: 'lazy', data: { space_image: true } %>
                 <% else %>
-                  <%= image_tag 'community_placeholder.jpg', class: 'w-full h-full object-cover', alt: space.title %>
+                  <%= image_tag 'community_placeholder.jpg', class: 'community-card-img', width: 104, height: 104, loading: 'lazy', data: { space_image: true } %>
                 <% end %>
               </div>
-              
-              <!-- Content -->
-              <div class="flex-1 p-4 flex flex-col justify-between">
-                <div class="mb-3">
-                  <h3 class="h5 text-gray-900 mb-2">
-                    <%= space.title %>
-                  </h3>
-                  <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                    <%= truncate(space.description, length: 140) %>
-                  </p>
-                </div>
+              <div class="community-card-content flex-1">
+                <h3 class="text-lg mb-1 line-clamp-1"><%= truncate(space.title, length: 25) %></h3>
                 
-                <div class="flex items-center justify-between">
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    <%= pluralize(space.memberships.count, 'member') %>
-                  </span>
-                  <%= link_to 'View Space', space_path(space), 
-                      class: 'inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200' %>
+                <!-- Categories -->
+                <% if space.community_categories.any? %>
+                  <div class="flex flex-wrap gap-1 mb-1">
+                    <% space.community_categories.each do |category| %>
+                      <span class="px-2 py-0.5 bg-white bg-opacity-60 text-gray-800 text-xs rounded-full font-medium">
+                        <%= category.name %>
+                      </span>
+                    <% end %>
+                  </div>
+                <% end %>
+                
+                <!-- Age Group Categories (separate row) -->
+                <% if space.age_group_categories.any? %>
+                  <div class="flex flex-wrap gap-1 mb-2">
+                    <% space.age_group_categories.each do |age_group| %>
+                      <span class="px-2 py-0.5 bg-orange-200 bg-opacity-80 text-orange-900 text-xs rounded-full font-medium">
+                        <%= age_group.name %>
+                      </span>
+                    <% end %>
+                  </div>
+                <% end %>
+                
+                <p class="text-sm mb-2 text-black line-clamp-2"><%= truncate(space.description, length: 80) %></p>
+                <div class="community-card-actions">
+                  <span class="btn btn-secondary pointer-events-none select-none cursor-default"><%= pluralize(space.memberships.count, 'member') %></span>
+                  <%= link_to 'View Space', space_path(space), class: 'btn btn-primary border-0' %>
                 </div>
               </div>
             </div>
@@ -157,11 +238,21 @@
           <p class="text-gray-600">Try adjusting your filters or check back later for new spaces.</p>
         </div>
       <% end %>
+        </div>
+      </turbo-frame>
     </section>
+    </turbo-frame>
   </div>
 </div>
 
 <style>
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -197,4 +288,84 @@
   border-color: #e5e7eb !important;
   color: #9ca3af !important;
 }
+
+/* Skeleton loading styles */
+.skeleton-card {
+  background: linear-gradient(90deg, #e4eeb3 25%, #f0f4d1 50%, #e4eeb3 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-text {
+  background: linear-gradient(90deg, #d1d5db 25%, #e5e7eb 50%, #d1d5db 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-button {
+  background: linear-gradient(90deg, #d1d5db 25%, #e5e7eb 50%, #d1d5db 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  function initializeImageLoading() {
+    const images = document.querySelectorAll('[data-space-image]');
+    const spacesContent = document.getElementById('spaces-content');
+    const spacesLoading = document.getElementById('spaces-loading');
+    
+    if (!images.length) {
+      if (spacesContent) spacesContent.classList.add('opacity-100');
+      return;
+    }
+
+    // Show skeleton loading initially
+    if (spacesLoading) spacesLoading.classList.remove('hidden');
+    if (spacesContent) spacesContent.classList.add('opacity-0');
+
+    let loadedCount = 0;
+    const totalImages = images.length;
+
+    function checkAllImagesLoaded() {
+      loadedCount++;
+      if (loadedCount >= totalImages) {
+        // All images loaded, show content
+        setTimeout(() => {
+          if (spacesLoading) spacesLoading.classList.add('hidden');
+          if (spacesContent) {
+            spacesContent.classList.remove('opacity-0');
+            spacesContent.classList.add('opacity-100');
+          }
+        }, 200); // Small delay for smooth transition
+      }
+    }
+
+    images.forEach(img => {
+      if (img.complete) {
+        checkAllImagesLoaded();
+      } else {
+        img.addEventListener('load', checkAllImagesLoaded);
+        img.addEventListener('error', checkAllImagesLoaded); // Handle failed loads
+      }
+    });
+  }
+
+  // Initialize on page load
+  initializeImageLoading();
+
+  // Re-initialize after turbo frame updates
+  document.addEventListener('turbo:frame-load', initializeImageLoading);
+});
+</script>

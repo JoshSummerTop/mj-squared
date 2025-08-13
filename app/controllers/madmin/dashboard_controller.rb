@@ -5,6 +5,14 @@ module Madmin
       @last_12_mos = revenue_for_range 12.months.ago..Time.current
       @last_month = revenue_for_range Time.current.prev_month.all_month
       @this_month = revenue_for_range Time.current.all_month
+      
+      # Community metrics
+      @total_spaces = ::Space.count
+      @total_posts = ::Post.count
+      @total_comments = ::Comment.count
+      @total_memberships = ::Membership.count
+      @spaces_this_month = ::Space.where(created_at: Time.current.all_month).count
+      @posts_this_month = ::Post.where(created_at: Time.current.all_month).count
     end
 
     private

@@ -1,0 +1,11 @@
+<turbo-stream action="replace" target="comments">
+  <template>
+    <%= render partial: "posts/comments", formats: [:html], locals: { comments: @post.comments.includes(:user) } %>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="replace" target="comment_form">
+  <template>
+    <%= render partial: "comments/form", formats: [:html], locals: { post: @post, comment: Comment.new } %>
+  </template>
+</turbo-stream>

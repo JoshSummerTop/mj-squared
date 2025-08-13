@@ -1,4 +1,5 @@
 module ImageHelper
+  include GravatarHelper
   # Render optimized space image with proper fallbacks and lazy loading
   def space_image_tag(space, size: "400x300", css_class: "w-full h-48 object-cover rounded-lg")
     if space.image.attached?
@@ -47,7 +48,12 @@ module ImageHelper
       )
     else
       # Use Gravatar as fallback
-      gravatar_image_tag(user.email, size: size, class: css_class)
+      image_tag(
+        gravatar_url_for(user.email, size: size),
+        alt: user.name,
+        class: css_class,
+        loading: "lazy"
+      )
     end
   end
 

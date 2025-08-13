@@ -9,6 +9,11 @@ Rails.application.routes.draw do
 
   authenticated :user, lambda { |u| u.admin? } do
     draw :madmin
+    
+    namespace :admin do
+      resources :community_categories, only: [:index, :new, :create, :edit, :update, :destroy]
+      resources :age_group_categories, only: [:index, :new, :create, :edit, :update, :destroy]
+    end
   end
 
   resources :announcements, only: [:index, :show]
@@ -51,6 +56,11 @@ Rails.application.routes.draw do
   # Dashboard route for authenticated users who want to access the old dashboard
   authenticated :user do
     get "/dashboard", to: "dashboard#show", as: :user_dashboard
+  end
+  
+  # User activity routes  
+  namespace :user, module: :users do
+    get 'posts', to: 'posts#index', as: :posts
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

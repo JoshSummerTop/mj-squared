@@ -14,7 +14,7 @@ class CommentsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.replace('comment_form', partial: 'comments/form', locals: { post: @post, comment: @comment }) }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace('comment_form', partial: 'comments/form', formats: [:html], locals: { post: @post, comment: @comment }) }
         format.html { redirect_to @post, alert: 'Could not add comment.' }
       end
     end
@@ -35,18 +35,19 @@ class CommentsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@comment, :form), partial: 'comments/form', locals: { post: @comment.post, comment: @comment }) }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@comment, :form), partial: 'comments/form', formats: [:html], locals: { post: @comment.post, comment: @comment }) }
         format.html { redirect_to @comment.post, alert: 'Could not update comment.' }
       end
     end
   end
 
   def destroy
+    @post = @comment.post
     comment_id = @comment.id
     @comment.destroy
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to @comment.post, notice: 'Comment deleted.' }
+      format.html { redirect_to @post, notice: 'Comment deleted.' }
     end
   end
 

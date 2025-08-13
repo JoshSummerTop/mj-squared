@@ -1,7 +1,7 @@
 <nav class="flex flex-wrap items-center justify-between px-4 py-2 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 text-sm font-medium" data-controller="toggle">
   <div class="flex items-center flex-shrink-0 mr-6">
     <%= link_to root_path, class: "flex items-center text-gray-700 hover:text-gray-800 dark:text-gray-100 dark:hover:text-gray-300" do %>
-      <%= render_svg "logo", styles: "fill-current" %>
+      <%= image_tag "logo.png", alt: Jumpstart.config.application_name, class: "h-8 w-auto" %>
       <span class="sr-only"><%= Jumpstart.config.application_name %></span>
     <% end %>
   </div>
@@ -24,9 +24,7 @@
     <div class="flex items-center space-x-4">
       <%= render "right_nav" %>
       <% if user_signed_in? %>
-        <div class="hidden lg:inline-block">
-          <%= render "notifications" %>
-        </div>
+        <%# Notification bell hidden - was: render "notifications" %>
         <div class="hidden lg:inline-flex items-center">
           <%= render "user_menu" %>
         </div>

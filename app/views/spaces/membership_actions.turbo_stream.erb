@@ -1,5 +1,11 @@
-<%= turbo_stream.replace "membership-actions" do %>
+<%= turbo_stream.update "membership-actions" do %>
   <%= render partial: "membership_actions", locals: { space: @space, membership: @membership } %>
+<% end %>
+
+<%= turbo_stream.replace "member-count" do %>
+  <p id="member-count" class="text-sm text-gray-600">
+    <%= pluralize(@space.memberships.count, 'member') %>
+  </p>
 <% end %>
 
 

@@ -1,0 +1,83 @@
+<div class="max-w-3xl mx-auto py-8">
+  <h1 class="text-2xl font-bold mb-6">My Community Activity</h1>
+
+  <div class="mb-8">
+    <h2 class="text-xl font-semibold mb-2">Spaces You've Joined</h2>
+    <% if @joined_spaces.any? %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <% @joined_spaces.each do |space| %>
+          <div class="bg-white rounded shadow p-4 flex flex-col">
+            <h3 class="font-bold text-lg mb-1">
+              <%= link_to space.title, space_path(space), class: "hover:underline" %>
+            </h3>
+            <div class="text-sm text-gray-500 mb-2">
+              Created by <%= space.created_by.name %>
+            </div>
+            <div class="text-gray-700 text-sm"><%= truncate(space.description, length: 100) %></div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-gray-500">You haven't joined any spaces yet.</div>
+    <% end %>
+  </div>
+
+  <div class="mb-8">
+    <h2 class="text-xl font-semibold mb-2">Spaces You've Created</h2>
+    <% if @created_spaces.any? %>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <% @created_spaces.each do |space| %>
+          <div class="bg-white rounded shadow p-4 flex flex-col">
+            <h3 class="font-bold text-lg mb-1">
+              <%= link_to space.title, space_path(space), class: "hover:underline" %>
+            </h3>
+            <div class="text-gray-700 text-sm"><%= truncate(space.description, length: 100) %></div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-gray-500">You haven't created any spaces yet.</div>
+    <% end %>
+  </div>
+
+  <div class="mb-8">
+    <h2 class="text-xl font-semibold mb-2">Posts You've Created</h2>
+    <% if @posts.any? %>
+      <div class="space-y-4">
+        <% @posts.each do |post| %>
+          <div class="bg-white rounded shadow p-4">
+            <h3 class="font-bold text-lg mb-1">
+              <%= link_to post.title, post_path(post), class: "hover:underline" %>
+            </h3>
+            <div class="text-sm text-gray-500 mb-2">
+              In <%= link_to post.space.title, space_path(post.space), class: "underline" %>
+            </div>
+            <div class="text-gray-700 text-sm"><%= truncate(post.content, length: 120) %></div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-gray-500">You haven't created any posts yet.</div>
+    <% end %>
+  </div>
+
+  <div>
+    <h2 class="text-xl font-semibold mb-2">Your Comments</h2>
+    <% if @comments.any? %>
+      <div class="space-y-4">
+        <% @comments.each do |comment| %>
+          <div class="bg-white rounded shadow p-4">
+            <div class="text-gray-700 mb-1"><%= comment.content %></div>
+            <div class="text-xs text-gray-500">
+              On post <%= link_to comment.post.title, post_path(comment.post), class: "underline" %>
+              in <%= link_to comment.post.space.title, space_path(comment.post.space), class: "underline" %>
+              • <%= time_ago_in_words(comment.created_at) %> ago
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-gray-500">You haven't made any comments yet.</div>
+    <% end %>
+  </div>
+</div>

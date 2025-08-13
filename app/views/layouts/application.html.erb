@@ -15,5 +15,15 @@
     </main>
 
     <%= render "footer" unless hotwire_native_app? %>
+    
+    <script>
+      // Ensure all modals are closed before Turbo caches the page
+      document.addEventListener('turbo:before-cache', function() {
+        document.querySelectorAll('dialog[open]').forEach(function(dialog) {
+          dialog.removeAttribute('open');
+          dialog.close();
+        });
+      });
+    </script>
   </body>
 </html>

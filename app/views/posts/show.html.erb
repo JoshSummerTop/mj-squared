@@ -1,0 +1,92 @@
+<% content_for :title, @post.title %>
+
+<div class="container mx-auto p-4 max-w-4xl">
+  <div class="my-8">
+    <nav class="text-sm mb-6" aria-label="Breadcrumb">
+      <ol class="list-none p-0 m-0 flex text-gray-500">
+        <li>
+          <%= link_to 'Community', root_path, class: 'hover:underline text-primary-600' %>
+        </li>
+        <li><span class="mx-2">/</span></li>
+        <li>
+          <%= link_to @space.title, space_path(@space), class: 'hover:underline text-primary-600' %>
+        </li>
+        <li><span class="mx-2">/</span></li>
+        <li class="text-gray-700"><%= @post.title %></li>
+      </ol>
+    </nav>
+    
+    <div class="p-4 bg-white border border-gray-200 rounded-lg lg:p-10">
+      <div class="mb-4 flex items-start justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-4"><%= @post.title %></h1>
+          
+          <% if @space.community_categories.any? %>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <% @space.community_categories.each do |cat| %>
+                <%= link_to cat.name, root_path(tab: cat.slug), class: 'inline-block px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-sm font-medium hover:bg-primary-100 transition-colors' %>
+              <% end %>
+            </div>
+          <% end %>
+          
+          <% if @post.space.age_group_categories.any? %>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <% @post.space.age_group_categories.each do |age_group| %>
+                <span class="px-2 py-0.5 bg-orange-200 bg-opacity-80 text-orange-900 text-xs rounded-full font-medium">
+                  <%= age_group.name %>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+          
+          <div class="flex items-center text-sm text-gray-500 space-x-4 mb-6">
+            <div class="flex items-center">
+              <%= user_avatar_tag(@post.created_by, size: 40, css_class: "w-10 h-10 rounded-full shadow-sm ring-2 ring-white flex-shrink-0 object-cover mr-3") %>
+              <div>
+                <div class="font-semibold text-gray-900"><%= @post.created_by.name %></div>
+                <div class="text-gray-500"><%= time_ago_in_words(@post.created_at) %> ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <% if user_signed_in? && @post.created_by == current_user %>
+          <div class="flex gap-2 ml-4">
+            <%= render "posts/form_modal", post: @post, space: @post.space, action_text: "Edit", title: "Edit Post", button_class: "btn btn-secondary btn-sm" %>
+            <%= button_to 'Delete', post_path(@post), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-sm' %>
+          </div>
+        <% end %>
+      </div>
+      
+      <% if @post.image.attached? %>
+        <div class="mb-6">
+          <%= image_tag @post.image, class: 'rounded-lg w-full max-w-2xl object-cover' %>
+        </div>
+      <% end %>
+      
+      <div class="post-content mb-8 prose prose-lg max-w-none">
+        <%= simple_format(@post.content) %>
+      </div>
+      
+      <div class="mb-8 border-t border-gray-200 pt-6">
+        <div id="like-section">
+          <%= render partial: "posts/like_section", locals: { post: @post, like: @like } %>
+        </div>
+      </div>
+      
+      <div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">Comments</h3>
+        
+        <div id="comments">
+          <%= render partial: "posts/comments", locals: { comments: @comments } %>
+        </div>
+        
+        <% if user_signed_in? %>
+          <div class="mt-6 pt-6 border-t border-gray-200" id="comment_form">
+            <%= render partial: "comments/form", locals: { post: @post, comment: Comment.new } %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

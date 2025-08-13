@@ -1,4 +1,18 @@
 <div class="container mx-auto px-4 py-8 max-w-2xl">
+  <nav class="text-sm mb-6" aria-label="Breadcrumb">
+    <ol class="list-none p-0 m-0 flex text-gray-500">
+      <li>
+        <%= link_to 'Community', root_path, class: 'hover:underline text-primary-600' %>
+      </li>
+      <li><span class="mx-2">/</span></li>
+      <li>
+        <%= link_to @space.title, space_path(@space), class: 'hover:underline text-primary-600' %>
+      </li>
+      <li><span class="mx-2">/</span></li>
+      <li class="text-gray-700">Edit</li>
+    </ol>
+  </nav>
+
   <h1 class="text-3xl font-bold mb-8">Edit Space</h1>
 
   <div class="bg-white rounded-lg shadow border border-gray-200 p-6">

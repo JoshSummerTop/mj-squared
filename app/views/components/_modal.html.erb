@@ -1,8 +1,8 @@
 <div data-controller="modal">
   <%= component.content %>
 
-  <%= tag.dialog class: component.container_class, data: {modal_target: "dialog", action: "click->modal#backdropClose"} do %>
-    <%= tag.div class: component.card_class do %>
+  <dialog class="<%= component.container_class %>" data-modal-target="dialog" data-action="click->modal#backdropClose" style="display: none;">
+    <div class="modal-card">
       <% if component.close_button? %>
         <button type="button" data-action="modal#close:prevent">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
@@ -24,6 +24,6 @@
           <%= component.actions %>
         </div>
       <% end %>
-    <% end %>
-  <% end %>
+    </div>
+  </dialog>
 </div>

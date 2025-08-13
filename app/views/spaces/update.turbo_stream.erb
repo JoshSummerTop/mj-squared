@@ -1,0 +1,38 @@
+<% if @space.errors.empty? %>
+  <turbo-stream action="replace" target="space_modal_form">
+    <template>
+      <div class="p-8 text-center">
+        <!-- Success Icon -->
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
+          <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+        </div>
+        
+        <!-- Title -->
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Space Updated!</h3>
+        
+        <!-- Message -->
+        <p class="text-gray-600 mb-6 leading-relaxed">
+          Your changes to <strong>"<%= @space.title %>"</strong> have been saved successfully and are now live.
+        </p>
+        
+        <!-- Actions -->
+        <div class="flex gap-3">
+          <%= link_to "View Space", space_path(@space), 
+              class: "flex-1 btn-primary-enhanced", 
+              data: { turbo_frame: "_top", action: "click->modal#close" } %>
+          <button type="button" class="flex-1 btn-secondary-enhanced" data-action="modal#close:prevent">
+            Close
+          </button>
+        </div>
+      </div>
+    </template>
+  </turbo-stream>
+<% else %>
+  <turbo-stream action="replace" target="space_modal_form">
+    <template>
+      <%= render "spaces/form_modal", space: @space, title: "Edit Space" %>
+    </template>
+  </turbo-stream>
+<% end %>

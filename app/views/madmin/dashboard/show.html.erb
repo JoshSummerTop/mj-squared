@@ -38,4 +38,38 @@
       <p><%= ::Pay::Subscription.active.count %></p>
     </div>
   </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <h4>Total Spaces</h4>
+      <p><%= @total_spaces %></p>
+    </div>
+
+    <div class="metric">
+      <h4>Total Posts</h4>
+      <p><%= @total_posts %></p>
+    </div>
+
+    <div class="metric">
+      <h4>Total Comments</h4>
+      <p><%= @total_comments %></p>
+    </div>
+
+    <div class="metric">
+      <h4>Total Memberships</h4>
+      <p><%= @total_memberships %></p>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <h4>Spaces This Month</h4>
+      <p><%= @spaces_this_month %></p>
+    </div>
+
+    <div class="metric">
+      <h4>Posts This Month</h4>
+      <p><%= @posts_this_month %></p>
+    </div>
+  </div>
 </section>

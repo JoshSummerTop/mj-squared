@@ -14,14 +14,33 @@ class Space < ApplicationRecord
   validates :description, presence: true
   validates :community_categories, presence: { message: "must select at least one community category" }
   validates :age_group_categories, presence: { message: "must select at least one age group" }
-  validate :image_presence
   validate :image_type
+
+  after_create :attach_placeholder_image_if_needed
 
   private
 
-  def image_presence
-    unless image.attached?
-      errors.add(:image, "must be attached")
+  def attach_placeholder_image_if_needed
+    return if image.attached?
+    
+    begin
+      placeholder_images = ['placeholder.jpg', 'placeholder_2.jpg', 'placeholder_3.jpg']
+      selected_placeholder = placeholder_images.sample
+      
+      placeholder_path = Rails.root.join('app', 'assets', 'images', 'placeholders', selected_placeholder)
+      
+      # Fallback to development path if precompiled assets aren't available
+      if File.exist?(placeholder_path)
+        image.attach(
+          io: File.open(placeholder_path),
+          filename: selected_placeholder,
+          content_type: 'image/jpeg'
+        )
+      else
+        Rails.logger.warn "Placeholder image not found: #{placeholder_path}"
+      end
+    rescue => e
+      Rails.logger.error "Error attaching placeholder image: #{e.message}"
     end
   end
 

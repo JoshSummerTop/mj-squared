@@ -49,8 +49,8 @@ class MetaTags
   attribute :prev_url
   attribute :web_app_capable, default: true
   attribute :noindex
-  attribute :icons, default: [{href: "/favicon.ico", sizes: :any}, {href: "/icon.svg", type: "image/svg+xml", sizes: :any}]
-  attribute :apple_touch_icon, default: "/apple-touch-icon.png"
+  attribute :icons, default: -> { [{href: ActionController::Base.helpers.asset_path("logo_small.png"), sizes: :any, type: "image/png"}] }
+  attribute :apple_touch_icon, default: -> { ActionController::Base.helpers.asset_path("logo_small.png") }
 
   # Separator for title & site
   attribute :separator, default: "|"

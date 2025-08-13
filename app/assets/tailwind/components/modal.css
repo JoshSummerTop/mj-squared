@@ -1,0 +1,149 @@
+/* Clean Modal Styles */
+
+/* Prevent body scroll when modal is open */
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/* Base modal dialog styles - COMPLETELY HIDDEN BY DEFAULT */
+dialog.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  z-index: 50;
+  display: none; /* Hidden by default */
+  align-items: center;
+  justify-content: center;
+  visibility: hidden; /* Extra hiding */
+  opacity: 0; /* Extra hiding */
+}
+
+/* Show modal when open attribute is present */
+dialog.modal[open] {
+  display: flex !important; /* Override inline style */
+  visibility: visible !important; /* Show it */
+  opacity: 1 !important; /* Show it */
+  animation: fadeIn 200ms ease-out forwards;
+}
+
+/* Modal backdrop */
+dialog.modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+/* Modal card container */
+.modal-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 24px;
+  width: 100%;
+  max-width: 32rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  margin: 16px;
+}
+
+/* Size variations */
+dialog.modal-sm .modal-card {
+  max-width: 24rem;
+}
+
+dialog.modal-md .modal-card {
+  max-width: 28rem;
+}
+
+dialog.modal-lg .modal-card {
+  max-width: 32rem;
+}
+
+dialog.modal-full .modal-card {
+  max-width: 100%;
+  max-height: 100%;
+  height: 100%;
+  width: 100%;
+  border-radius: 0;
+  margin: 0;
+}
+
+/* Close button - fixed positioning */
+.modal-card button[type="button"] {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 10;
+  border-radius: 6px;
+}
+
+.modal-card button[type="button"]:hover {
+  color: #374151;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Modal content styles */
+.modal-title {
+  font-size: 18px;
+  line-height: 28px;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #111827;
+  margin-right: 40px; /* Space for close button */
+}
+
+.modal-body {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+/* Modal animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+dialog.modal[closing] {
+  display: flex;
+  animation: fadeOut 200ms ease-in forwards;
+}

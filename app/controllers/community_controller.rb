@@ -14,18 +14,14 @@ class CommunityController < ApplicationController
 
     @spaces = Space.includes(:community_categories, :age_group_categories, :memberships)
     
-    # Apply filters based on selections
+    # Apply filters using WHERE EXISTS to avoid association pollution
     if selected_category && selected_age_group
-      @spaces = @spaces.joins(:community_categories)
-                       .joins("INNER JOIN age_group_categories_spaces ags ON ags.space_id = spaces.id")
-                       .where(community_categories: { id: selected_category.id })
-                       .where("ags.age_group_category_id = ?", selected_age_group.id)
+      @spaces = @spaces.where("EXISTS (SELECT 1 FROM community_categories_spaces WHERE space_id = spaces.id AND community_category_id = ?)", selected_category.id)
+                       .where("EXISTS (SELECT 1 FROM age_group_categories_spaces WHERE space_id = spaces.id AND age_group_category_id = ?)", selected_age_group.id)
     elsif selected_category
-      @spaces = @spaces.joins(:community_categories)
-                       .where(community_categories: { id: selected_category.id })
+      @spaces = @spaces.where("EXISTS (SELECT 1 FROM community_categories_spaces WHERE space_id = spaces.id AND community_category_id = ?)", selected_category.id)
     elsif selected_age_group
-      @spaces = @spaces.joins("INNER JOIN age_group_categories_spaces ags ON ags.space_id = spaces.id")
-                       .where("ags.age_group_category_id = ?", selected_age_group.id)
+      @spaces = @spaces.where("EXISTS (SELECT 1 FROM age_group_categories_spaces WHERE space_id = spaces.id AND age_group_category_id = ?)", selected_age_group.id)
     end
     
     # Pagination for infinite scroll
@@ -55,10 +51,9 @@ class CommunityController < ApplicationController
 
     # Joined spaces filtered by selected categories
     if current_user
-      @joined_spaces = current_user.spaces
+      @joined_spaces = current_user.spaces.includes(:community_categories, :age_group_categories, :memberships)
       if selected_category
-        @joined_spaces = @joined_spaces.joins(:community_categories)
-                                      .where(community_categories: { id: selected_category.id })
+        @joined_spaces = @joined_spaces.where("EXISTS (SELECT 1 FROM community_categories_spaces WHERE space_id = spaces.id AND community_category_id = ?)", selected_category.id)
       end
       @joined_spaces = @joined_spaces.distinct
     else

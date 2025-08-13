@@ -1,5 +1,6 @@
 <% content_for :title, @page_title %>
 
+<div class="container mx-auto p-4">
 <div class="max-w-4xl mx-auto">
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @page_title %></h1>
@@ -11,7 +12,7 @@
   </div>
 
   <% if @posts.any? %>
-    <div class="space-y-6">
+    <div id="posts-container" class="space-y-6">
       <% @posts.each do |post| %>
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
           <div class="p-6">
@@ -25,10 +26,10 @@
                 <div class="flex items-center text-sm text-gray-500 space-x-4">
                   <div class="flex items-center">
                     <% if post.created_by.avatar.attached? %>
-                      <%= image_tag post.created_by.avatar.variant(resize_to_fill: [32, 32]), alt: post.created_by.name, class: "w-8 h-8 rounded-full mr-2" %>
+                      <%= image_tag post.created_by.avatar.variant(resize_to_fill: [32, 32]), alt: post.created_by.name, class: "w-8 h-8 rounded-full shadow-sm flex-shrink-0 object-cover mr-2" %>
                     <% else %>
-                      <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-2">
-                        <span class="text-primary-600 font-medium text-sm"><%= post.created_by.name.first.upcase %></span>
+                      <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold shadow-sm mr-2 flex-shrink-0">
+                        <span class="text-xs font-bold"><%= post.created_by.name[0].upcase %></span>
                       </div>
                     <% end %>
                     <span class="font-medium"><%= post.created_by.name %></span>
@@ -89,10 +90,25 @@
       <% end %>
     </div>
 
-    <!-- Pagination placeholder -->
-    <div class="mt-8 text-center">
-      <p class="text-gray-500 text-sm">Showing recent community activity</p>
-    </div>
+    <!-- Load More Button (for infinite scroll) -->
+    <% if @has_more_pages %>
+      <div id="load-more-container" class="text-center py-6">
+        <button id="load-more-btn" 
+                class="btn btn-primary"
+                data-page="<%= @current_page + 1 %>"
+                data-space-id="<%= @space&.id %>">
+          Load More Posts
+        </button>
+        <div id="load-more-spinner" class="hidden mt-4">
+          <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
+          <span class="ml-2 text-gray-600">Loading...</span>
+        </div>
+      </div>
+    <% else %>
+      <div class="mt-8 text-center">
+        <p class="text-gray-500 text-sm">You've reached the end of the posts</p>
+      </div>
+    <% end %>
   <% else %>
     <div class="text-center py-12">
       <div class="max-w-md mx-auto">
@@ -116,6 +132,85 @@
     </div>
   <% end %>
 </div>
+</div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  function initializeInfiniteScroll() {
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const loadMoreSpinner = document.getElementById('load-more-spinner');
+    const postsContainer = document.getElementById('posts-container');
+    
+    if (!loadMoreBtn) return;
+    
+    loadMoreBtn.addEventListener('click', async function() {
+      const page = this.dataset.page;
+      const spaceId = this.dataset.spaceId;
+      
+      console.log('Posts: Loading page:', page, 'spaceId:', spaceId);
+      
+      // Show loading state
+      loadMoreBtn.classList.add('hidden');
+      loadMoreSpinner.classList.remove('hidden');
+      
+      try {
+        // Build URL with params
+        let url = `/posts?page=${page}`;
+        if (spaceId && spaceId !== 'null') url = `/spaces/${spaceId}/posts?page=${page}`;
+        
+        console.log('Posts: Fetching URL:', url);
+        
+        const response = await fetch(url, {
+          headers: {
+            'Accept': 'text/html',
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+        
+        if (response.ok) {
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          
+          // Extract new posts from response
+          const newPosts = doc.querySelectorAll('#posts-container > .bg-white');
+          const newLoadMoreContainer = doc.querySelector('#load-more-container');
+          
+          console.log('Posts: Found', newPosts.length, 'new posts');
+          
+          // Append new posts
+          newPosts.forEach(post => {
+            postsContainer.appendChild(post);
+          });
+          
+          // Update load more button or remove it
+          const currentLoadMoreContainer = document.getElementById('load-more-container');
+          if (currentLoadMoreContainer) {
+            currentLoadMoreContainer.remove();
+          }
+          
+          if (newLoadMoreContainer) {
+            postsContainer.parentNode.appendChild(newLoadMoreContainer);
+            initializeInfiniteScroll(); // Re-initialize for new button
+          }
 
+        }
+      } catch (error) {
+        console.error('Error loading more posts:', error);
+        // Show error state
+        loadMoreSpinner.classList.add('hidden');
+        loadMoreBtn.textContent = 'Error - Try Again';
+        loadMoreBtn.classList.remove('hidden');
+      }
+    });
+  }
 
+  // Initialize on page load
+  initializeInfiniteScroll();
+
+  // Re-initialize after turbo frame updates
+  document.addEventListener('turbo:frame-load', function() {
+    initializeInfiniteScroll();
+  });
+});
+</script>

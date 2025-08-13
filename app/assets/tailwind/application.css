@@ -63,6 +63,7 @@
 @import "./components/typography.css" layer(components);
 @import "./components/util.css" layer(components);
 @import "./components/braintree.css" layer(components);
+@import "./components/modal.css" layer(components);
 @import "./components/community.css" layer(components);
 @import "./components/filters.css" layer(components);
 @import "./components/post_content.css" layer(components);

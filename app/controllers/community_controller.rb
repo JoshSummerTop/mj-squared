@@ -1,6 +1,6 @@
 class CommunityController < ApplicationController
   def index
-    @categories = CommunityCategory.joins(:spaces).distinct
+    @categories = CommunityCategory.all
 
     # Set defaults if no parameters are present
     params[:tab] = 'all' if params[:tab].blank?
@@ -16,15 +16,16 @@ class CommunityController < ApplicationController
     
     # Apply filters based on selections
     if selected_category && selected_age_group
-      @spaces = @spaces.joins(:community_categories, :age_group_categories)
+      @spaces = @spaces.joins(:community_categories)
+                       .joins("INNER JOIN age_group_categories_spaces ags ON ags.space_id = spaces.id")
                        .where(community_categories: { id: selected_category.id })
-                       .where(age_group_categories: { id: selected_age_group.id })
+                       .where("ags.age_group_category_id = ?", selected_age_group.id)
     elsif selected_category
       @spaces = @spaces.joins(:community_categories)
                        .where(community_categories: { id: selected_category.id })
     elsif selected_age_group
-      @spaces = @spaces.joins(:age_group_categories)
-                       .where(age_group_categories: { id: selected_age_group.id })
+      @spaces = @spaces.joins("INNER JOIN age_group_categories_spaces ags ON ags.space_id = spaces.id")
+                       .where("ags.age_group_category_id = ?", selected_age_group.id)
     end
     @spaces = @spaces.order(created_at: :desc).distinct
 

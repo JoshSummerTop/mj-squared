@@ -3,8 +3,8 @@ application_name: MJ Squared
 business_name: MJ Squared, LLC
 business_address: 
 domain: mjsquared.elloco.dev
-support_email: ellocodevteam@gmail.com
-default_from_email: ellocodevteam@gmail.com
+support_email: info@mjsquared.elloco.dev
+default_from_email: noreply@mjsquared.elloco.dev
 background_job_processor: solid_queue
 email_provider: sendgrid
 account_types: personal

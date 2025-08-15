@@ -1,35 +1,57 @@
 <% Current.meta_tags.set(title: t(".title")) %>
 
 <% content_for :form_block do %>
-  <div class="mb-4 text-center">
-    <h2 class="mb-px"><%= t('.sign_in') %></h2>
-    <%= t ".sign_up_html", link: link_to("sign up for an account", new_registration_path(resource_name), class: "font-semibold") %>
+  <!-- Logo Section -->
+  <div class="mb-8 text-center">
+    <%= link_to root_path, class: "inline-block" do %>
+      <%= image_tag "logo.png", alt: Jumpstart.config.application_name, class: "h-16 w-auto mx-auto mb-4" %>
+    <% end %>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2" style="font-family: 'Paytone One', sans-serif;"><%= t('.sign_in') %></h1>
+    <p class="text-gray-600 dark:text-gray-400">
+      <%= t ".sign_up_html", link: link_to("sign up for an account", new_registration_path(resource_name), class: "font-semibold text-primary-500 hover:text-primary-600") %>
+    </p>
   </div>
 
-  <%= form_with(model: resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f| %>
+  <%= form_with(model: resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }, class: "space-y-6") do |f| %>
     <div class="form-group">
-      <%= f.label :email %>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: true, class: "form-control" %>
+      <%= f.label :email, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Enter your email", class: "form-control w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-gray-100 transition duration-200" %>
     </div>
 
-    <div class="form-group">
-      <%= f.label :password %>
-      <%= f.password_field :password, autocomplete: "current-password", placeholder: true, class: "form-control" %>
+    <div class="form-group" data-controller="password-toggle">
+      <%= f.label :password, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+      <div class="relative">
+        <%= f.password_field :password, autocomplete: "current-password", placeholder: "Enter your password", class: "form-control w-full px-4 py-3 pr-12 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-gray-100 transition duration-200", data: { password_toggle_target: "password" } %>
+        <button type="button" 
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200" 
+                data-password-toggle-target="toggle" 
+                data-action="click->password-toggle#toggle">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <% if devise_mapping.rememberable? -%>
       <% if hotwire_native_app? %>
         <%= f.hidden_field :remember_me, value: true %>
       <% else %>
-        <div class="form-group form-picker-group">
-          <%= f.check_box :remember_me %>
-          <%= f.label :remember_me %>
+        <div class="flex items-center justify-between">
+          <div class="flex items-start">
+            <%= f.check_box :remember_me, class: "h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded flex-shrink-0 mt-0.5" %>
+            <%= f.label :remember_me, class: "ml-3 text-sm text-gray-700 dark:text-gray-300 leading-5" %>
+          </div>
+          <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+            <%= link_to "Forgot password?", new_password_path(resource_name), class: "text-sm text-primary-600 hover:text-primary-500 font-medium" %>
+          <% end %>
         </div>
       <% end -%>
     <% end -%>
 
     <div class="form-group">
-      <%= f.submit t('.sign_in'), class: "btn btn-primary btn-expanded" %>
+      <%= f.submit t('.sign_in'), class: "w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-200" %>
     </div>
   <% end %>
 

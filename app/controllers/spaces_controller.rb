@@ -3,25 +3,24 @@ class SpacesController < ApplicationController
   before_action :authenticate_user!, except: [:show]
 
   def show
-    # Pagination for infinite scroll (matching existing pattern)
-    page = (params[:page] || 1).to_i
-    per_page = 10
+    @posts_relation = @space.posts.includes(:created_by, :age_group_categories, :likes)
+                                  .order(created_at: :desc)
     
-    @posts = @space.posts.includes(:created_by, :age_group_categories, :likes)
-                   .order(created_at: :desc)
-    
-    # Get total for pagination
-    total_posts = @posts.count
-    @posts = @posts.offset((page - 1) * per_page).limit(per_page)
-    
-    @current_page = page
-    @has_more_pages = (page * per_page) < total_posts
-    
+    @pagy, @posts = pagy(@posts_relation, items: 10)
     @membership = current_user&.memberships&.find_by(space: @space) if user_signed_in?
+    
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def new
     @space = Space.new
+    
+    respond_to do |format|
+      format.html # renders new.html.erb (for modal)
+    end
   end
 
   def create
@@ -31,11 +30,15 @@ class SpacesController < ApplicationController
     respond_to do |format|
       if @space.save
         @space.age_group_category_ids = params[:space][:age_group_category_ids] if params[:space][:age_group_category_ids]
-        format.html { redirect_to @space, notice: 'Space created successfully.' }
-        format.turbo_stream
+        # Add creator as member automatically 
+        @space.memberships.create!(user: current_user)
+        
+        format.html { redirect_to root_path, notice: 'Space created successfully.' }
+        format.turbo_stream { render :create_success }
       else
+        # Re-render the form with errors in the modal turbo_frame
         format.html { render :new, status: :unprocessable_entity }
-        format.turbo_stream
+        format.turbo_stream { render :create_error, status: :unprocessable_entity }
       end
     end
   end

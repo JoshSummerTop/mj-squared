@@ -16,6 +16,9 @@
 
     <%= render "footer" unless hotwire_native_app? %>
     
+    <%# Production-grade Turbo Modal System %>
+    <%= render "shared/dialog" %>
+    
     <script>
       // Ensure all modals are closed before Turbo caches the page
       document.addEventListener('turbo:before-cache', function() {

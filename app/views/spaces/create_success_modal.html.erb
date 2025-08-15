@@ -1,0 +1,31 @@
+<%# Success state for turbo_frame modal %>
+<%= turbo_frame_tag "modal", class: "flex items-center justify-center min-h-full p-4" do %>
+  <div data-modal-content class="bg-white rounded-lg shadow-xl max-w-md w-full">
+    <div class="p-8 text-center">
+      <!-- Success Icon -->
+      <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+        <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </div>
+      
+      <!-- Title and Message -->
+      <h3 class="text-xl font-bold text-gray-900 mb-3">Space Created!</h3>
+      <p class="text-gray-600 mb-6 leading-relaxed">
+        Your space <strong>"<%= @space.title %>"</strong> has been created successfully and is now ready for the community to join.
+      </p>
+      
+      <!-- Action Buttons -->
+      <div class="flex gap-3 justify-center">
+        <%= link_to "View Space", space_path(@space),
+                   class: "px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500",
+                   data: { turbo_frame: "_top" } %>
+        <button type="button"
+               data-action="turbo-modal#close"
+               class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+<% end %>

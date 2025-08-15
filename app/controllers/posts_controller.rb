@@ -11,36 +11,32 @@ class PostsController < ApplicationController
   end
 
   def index
-    # Pagination for infinite scroll
-    page = (params[:page] || 1).to_i
-    per_page = 10
-    
     if @space.present?
       # When accessed through a space (e.g., /spaces/1/posts)
-      @posts = @space.posts.includes(:created_by, :age_group_categories, :likes, :space)
-                     .order(created_at: :desc)
+      @posts_relation = @space.posts.includes(:created_by, :age_group_categories, :likes, :space)
+                                    .order(created_at: :desc)
       @page_title = "Posts in #{@space.title}"
-      
-      # Get total for pagination
-      total_posts = @posts.count
-      @posts = @posts.offset((page - 1) * per_page).limit(per_page)
     else
       # When accessed directly for all community activity (e.g., /posts)
-      @posts = Post.includes(:created_by, :age_group_categories, :likes, :space)
-                  .order(created_at: :desc)
+      @posts_relation = Post.includes(:created_by, :age_group_categories, :likes, :space)
+                           .order(created_at: :desc)
       @page_title = "All Community Activity"
-      
-      # Get total for pagination  
-      total_posts = @posts.count
-      @posts = @posts.offset((page - 1) * per_page).limit(per_page)
     end
     
-    @current_page = page
-    @has_more_pages = (page * per_page) < total_posts
+    @pagy, @posts = pagy(@posts_relation, items: 10)
+    
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def new
     @post = @space.posts.new
+    
+    respond_to do |format|
+      format.html # renders new.html.erb (for modal)
+    end
   end
 
   def create
@@ -51,10 +47,11 @@ class PostsController < ApplicationController
     respond_to do |format|
       if @post.save
         format.html { redirect_to @post, notice: 'Post created.' }
-        format.turbo_stream
+        format.turbo_stream { render :create_success }
       else
+        # Re-render the form with errors in the modal turbo_frame
         format.html { render :new, status: :unprocessable_entity }
-        format.turbo_stream
+        format.turbo_stream { render :create_error, status: :unprocessable_entity }
       end
     end
   end

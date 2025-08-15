@@ -20,7 +20,7 @@
         </div>
         
         <!-- Delete button for own comments -->
-        <% if user_signed_in? && comment.user == current_user %>
+        <% if can_manage_comment?(comment) %>
           <div class="flex justify-end mt-2">
             <%= button_to [comment.post, comment], method: :delete, 
                 data: { 

@@ -50,7 +50,7 @@
           </div>
         </div>
         
-        <% if user_signed_in? && @post.created_by == current_user %>
+        <% if can_manage_post?(@post) %>
           <div class="flex gap-2 ml-4">
             <%= render "posts/edit_modal_form", post: @post, action_text: "Edit", button_class: "btn btn-secondary btn-sm" %>
             <%= button_to 'Delete', post_path(@post), method: :delete, 

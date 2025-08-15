@@ -76,8 +76,11 @@ class PostsController < ApplicationController
   end
 
   def edit
-    # Simple authorization: only creator can edit
-    redirect_to @post, alert: 'Not authorized' unless @post.created_by == current_user
+    # Authorization: only post creator or space creator can edit
+    unless can_manage_post?(@post)
+      redirect_to @post, alert: 'Not authorized'
+      return
+    end
     
     respond_to do |format|
       format.html { render 'edit_modal' }
@@ -85,8 +88,11 @@ class PostsController < ApplicationController
   end
 
   def update
-    # Simple authorization: only creator can edit
-    return redirect_to @post, alert: 'Not authorized' unless @post.created_by == current_user
+    # Authorization: only post creator or space creator can edit
+    unless can_manage_post?(@post)
+      redirect_to @post, alert: 'Not authorized'
+      return
+    end
     
     respond_to do |format|
       if @post.update(post_params.except(:age_group_category_ids))
@@ -104,8 +110,11 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    # Simple authorization: only creator can delete
-    return redirect_to @post, alert: 'Not authorized' unless @post.created_by == current_user
+    # Authorization: only post creator or space creator can delete
+    unless can_manage_post?(@post)
+      redirect_to @post, alert: 'Not authorized'
+      return
+    end
     
     space = @post.space
     if @post.destroy
@@ -160,6 +169,13 @@ class PostsController < ApplicationController
 
   def post_params
     params.require(:post).permit(:title, :content, :image)
+  end
+  
+  private
+  
+  # Check if current user can edit/delete a post
+  def can_manage_post?(post)
+    user_signed_in? && (post.created_by == current_user || post.space.created_by == current_user)
   end
 end
 

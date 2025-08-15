@@ -48,8 +48,9 @@ Rails.application.routes.draw do
     end
   end
 
-  # Dashboard route for authenticated users who want to access the old dashboard
   authenticated :user do
+    root to: "community#index", as: :user_root
+    # Dashboard route for authenticated users who want to access the old dashboard
     get "/dashboard", to: "dashboard#show", as: :user_dashboard
   end
   

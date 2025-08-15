@@ -64,8 +64,11 @@ class SpacesController < ApplicationController
   end
 
   def edit
-    # Simple authorization: only creator can edit
-    redirect_to @space, alert: 'Not authorized' unless @space.created_by == current_user
+    # Authorization: only creator can edit
+    unless @space.created_by == current_user
+      redirect_to @space, alert: 'Not authorized'
+      return
+    end
     
     respond_to do |format|
       format.html { render 'edit_modal' }
@@ -73,7 +76,7 @@ class SpacesController < ApplicationController
   end
 
   def update
-    # Simple authorization: only creator can edit
+    # Authorization: only creator can edit
     return redirect_to @space, alert: 'Not authorized' unless @space.created_by == current_user
     
     respond_to do |format|

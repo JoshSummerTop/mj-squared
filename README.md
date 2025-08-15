@@ -10,7 +10,7 @@ MJ-Squared is a community platform that allows users to:
 - **Engage through comments** and likes
 - **Connect with like-minded people** in age-targeted communities
 
-The platform emphasizes **safety and age-targeted content** through category and age group targeting, making it ideal for communities that need to maintain targeted boundaries.
+The platform emphasizes **safety and age-targeted content** through category and age group targeting, making it ideal for communities that need to maintain targeted boundaries.tr
 
 ## 🚀 Key Features
 

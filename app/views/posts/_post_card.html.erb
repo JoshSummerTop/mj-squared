@@ -1,48 +1,88 @@
-<%# Reusable post card component %>
-<%= link_to post_path(post), class: "block" do %>
-  <div class="post-card-enhanced animate-fade-in bg-[rgba(189,214,69,0.2)] rounded-2xl p-4 border border-[#5CCBD4] hover:bg-[rgba(189,214,69,0.3)] hover:shadow-md transition-all duration-200 cursor-pointer">
-    <div class="flex items-start gap-3">
-      <!-- User Avatar -->
-      <div class="flex-shrink-0">
-        <%= user_avatar_tag(post.created_by, size: 40, css_class: "w-10 h-10 rounded-full object-cover") %>
-      </div>
-      
-      <!-- Post Content -->
-      <div class="flex-1 min-w-0">
-        <!-- Header with name and timestamp -->
-        <div class="flex items-center justify-between mb-2">
-          <h4 class="font-semibold text-gray-900 text-sm">
-            <%= post.created_by.name %>
-          </h4>
-          <span class="text-xs text-gray-500 flex-shrink-0">
-            <%= time_ago_in_words(post.created_at) %> ago
-          </span>
-        </div>
+<%# Full post card component for posts index page %>
+<div class="rounded-lg shadow-sm border overflow-hidden hover:shadow-md transition-shadow" style="background-color: rgba(189, 214, 69, 0.2); border-color: #5CCBD4;">
+  <div class="p-6">
+    <!-- Post Header -->
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex-1">
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+          <%= link_to post.title, post_path(post), class: "text-gray-900 hover:text-gray-700 transition-colors", data: { turbo_frame: "_top" } %>
+        </h3>
         
-        <!-- Post Content -->
-        <p class="text-sm text-gray-700 mb-3 leading-relaxed">
-          <span class="font-medium text-gray-900"><%= post.title %></span>
-          <% if post.content.present? %>
-            <br><%= truncate(strip_tags(post.content), length: 150) %>
+        <div class="flex items-center text-sm text-gray-500 space-x-4">
+          <div class="flex items-center">
+            <% if post.created_by.avatar.attached? %>
+              <%= image_tag post.created_by.avatar.variant(resize_to_fill: [32, 32]), alt: post.created_by.name, class: "w-8 h-8 rounded-full shadow-sm flex-shrink-0 object-cover mr-2" %>
+            <% else %>
+              <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold shadow-sm mr-2 flex-shrink-0">
+                <span class="text-xs font-bold"><%= post.created_by.name[0].upcase %></span>
+              </div>
+            <% end %>
+            <span class="font-medium"><%= post.created_by.name %></span>
+          </div>
+          
+          <span>•</span>
+          <time datetime="<%= post.created_at.iso8601 %>"><%= time_ago_in_words(post.created_at) %> ago</time>
+          
+          <% unless local_assigns[:hide_space] %>
+            <span>•</span>
+            <span class="text-primary-600 font-medium">
+              <%= link_to post.space.title, space_path(post.space), class: "hover:text-primary-700 transition-colors" %>
+            </span>
           <% end %>
-        </p>
-
-        <!-- Stats -->
-        <div class="flex items-center gap-4 text-xs text-gray-500">
-          <div class="flex items-center gap-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-            </svg>
-            <%= post.likes.count %>
-          </div>
-          <div class="flex items-center gap-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-            </svg>
-            <%= post.comments.count %>
-          </div>
         </div>
       </div>
     </div>
+
+    <!-- Post Content Preview -->
+    <div class="prose prose-sm max-w-none mb-4">
+      <p class="text-gray-700 leading-relaxed">
+        <%= truncate(strip_tags(post.content), length: 200, separator: ' ') %>
+      </p>
+    </div>
+
+    <!-- Categories and Age Groups -->
+    <div class="space-y-2 mb-4">
+      <!-- Community Categories -->
+      <% if post.space.community_categories.any? %>
+        <div class="flex flex-wrap gap-2">
+          <% post.space.community_categories.each do |category| %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+              <%= category.name %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+      
+      <!-- Age Groups -->
+      <% if post.space.age_group_categories.any? %>
+        <div class="flex flex-wrap gap-2">
+          <% post.space.age_group_categories.each do |age_group| %>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+              <%= age_group.name %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Post Footer -->
+    <div class="flex items-center justify-between pt-4 border-t" style="border-color: #5CCBD4;">
+      <div class="flex items-center space-x-6 text-sm text-gray-500">
+        <span class="flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+          <%= post.likes.count %> likes
+        </span>
+        <span class="flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+          </svg>
+          <%= post.comments.count %> comments
+        </span>
+      </div>
+      
+      <%= link_to "Read more", post_path(post), class: "text-primary-600 hover:text-primary-700 font-medium text-sm transition-colors", data: { turbo_frame: "_top" } %>
+    </div>
   </div>
-<% end %>
+</div>

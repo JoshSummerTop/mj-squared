@@ -210,3 +210,4 @@ class TurboModalSystemTest < ApplicationSystemTestCase
     assert_equal field.native, focused_element
   end
 end
+

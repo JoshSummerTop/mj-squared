@@ -12,104 +12,25 @@
   </div>
 
   <% if @posts.any? %>
-    <div id="posts-container" class="space-y-6">
-      <% @posts.each do |post| %>
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-          <div class="p-6">
-            <!-- Post Header -->
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex-1">
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">
-                  <%= link_to post.title, post_path(post), class: "hover:text-primary-600 transition-colors" %>
-                </h3>
-                
-                <div class="flex items-center text-sm text-gray-500 space-x-4">
-                  <div class="flex items-center">
-                    <% if post.created_by.avatar.attached? %>
-                      <%= image_tag post.created_by.avatar.variant(resize_to_fill: [32, 32]), alt: post.created_by.name, class: "w-8 h-8 rounded-full shadow-sm flex-shrink-0 object-cover mr-2" %>
-                    <% else %>
-                      <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold shadow-sm mr-2 flex-shrink-0">
-                        <span class="text-xs font-bold"><%= post.created_by.name[0].upcase %></span>
-                      </div>
-                    <% end %>
-                    <span class="font-medium"><%= post.created_by.name %></span>
-                  </div>
-                  
-                  <span>•</span>
-                  <time datetime="<%= post.created_at.iso8601 %>"><%= time_ago_in_words(post.created_at) %> ago</time>
-                  
-                  <% unless @space.present? %>
-                    <span>•</span>
-                    <span class="text-primary-600 font-medium">
-                      <%= link_to post.space.title, space_path(post.space), class: "hover:text-primary-700 transition-colors" %>
-                    </span>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-
-            <!-- Post Content Preview -->
-            <div class="prose prose-sm max-w-none mb-4">
-              <p class="text-gray-700 leading-relaxed">
-                <%= truncate(strip_tags(post.content), length: 200, separator: ' ') %>
-              </p>
-            </div>
-
-            <!-- Age Groups -->
-            <% if post.age_group_categories.any? %>
-              <div class="flex flex-wrap gap-2 mb-4">
-                <% post.age_group_categories.each do |age_group| %>
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800">
-                    <%= age_group.name %>
-                  </span>
-                <% end %>
-              </div>
-            <% end %>
-
-            <!-- Post Footer -->
-            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-              <div class="flex items-center space-x-6 text-sm text-gray-500">
-                <span class="flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                  </svg>
-                  <%= post.likes.count %> likes
-                </span>
-                <span class="flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                  </svg>
-                  <%= post.comments.count %> comments
-                </span>
-              </div>
-              
-              <%= link_to "Read more", post_path(post), class: "text-primary-600 hover:text-primary-700 font-medium text-sm transition-colors" %>
-            </div>
-          </div>
-        </div>
+    <turbo-frame id="posts_content">
+      <div class="space-y-6">
+        <%= render partial: "post_card", collection: @posts, as: :post, locals: { hide_space: @space.present? } %>
+      </div>
+      
+      <!-- Infinite Scroll Trigger -->
+      <% if @pagy.next %>
+        <%= turbo_frame_tag "infinite_scroll_trigger", 
+                           src: @space.present? ? space_posts_path(@space, page: @pagy.next, format: :turbo_stream) : posts_path(page: @pagy.next, format: :turbo_stream),
+                           loading: :lazy %>
       <% end %>
-    </div>
-
-    <!-- Load More Button (for infinite scroll) -->
-    <% if @has_more_pages %>
-      <div id="load-more-container" class="text-center py-6">
-        <button id="load-more-btn" 
-                class="btn btn-primary"
-                data-page="<%= @current_page + 1 %>"
-                data-space-id="<%= @space&.id %>">
-          Load More Posts
-        </button>
-        <div id="load-more-spinner" class="hidden mt-4">
-          <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
-          <span class="ml-2 text-gray-600">Loading...</span>
-        </div>
-      </div>
-    <% else %>
-      <div class="mt-8 text-center">
-        <p class="text-gray-500 text-sm">You've reached the end of the posts</p>
-      </div>
-    <% end %>
+    </turbo-frame>
   <% else %>
+    <!-- Debug info -->
+    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+      <p><strong>Debug:</strong> No posts found. Total posts in database: <%= Post.count %></p>
+      <p>Space present: <%= @space.present? %></p>
+      <p>Posts relation: <%= @posts_relation&.count || 'nil' %></p>
+    </div>
     <div class="text-center py-12">
       <div class="max-w-md mx-auto">
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -134,83 +55,4 @@
 </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  function initializeInfiniteScroll() {
-    const loadMoreBtn = document.getElementById('load-more-btn');
-    const loadMoreSpinner = document.getElementById('load-more-spinner');
-    const postsContainer = document.getElementById('posts-container');
-    
-    if (!loadMoreBtn) return;
-    
-    loadMoreBtn.addEventListener('click', async function() {
-      const page = this.dataset.page;
-      const spaceId = this.dataset.spaceId;
-      
-      console.log('Posts: Loading page:', page, 'spaceId:', spaceId);
-      
-      // Show loading state
-      loadMoreBtn.classList.add('hidden');
-      loadMoreSpinner.classList.remove('hidden');
-      
-      try {
-        // Build URL with params
-        let url = `/posts?page=${page}`;
-        if (spaceId && spaceId !== 'null') url = `/spaces/${spaceId}/posts?page=${page}`;
-        
-        console.log('Posts: Fetching URL:', url);
-        
-        const response = await fetch(url, {
-          headers: {
-            'Accept': 'text/html',
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        });
-        
-        if (response.ok) {
-          const html = await response.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-          
-          // Extract new posts from response
-          const newPosts = doc.querySelectorAll('#posts-container > .bg-white');
-          const newLoadMoreContainer = doc.querySelector('#load-more-container');
-          
-          console.log('Posts: Found', newPosts.length, 'new posts');
-          
-          // Append new posts
-          newPosts.forEach(post => {
-            postsContainer.appendChild(post);
-          });
-          
-          // Update load more button or remove it
-          const currentLoadMoreContainer = document.getElementById('load-more-container');
-          if (currentLoadMoreContainer) {
-            currentLoadMoreContainer.remove();
-          }
-          
-          if (newLoadMoreContainer) {
-            postsContainer.parentNode.appendChild(newLoadMoreContainer);
-            initializeInfiniteScroll(); // Re-initialize for new button
-          }
 
-        }
-      } catch (error) {
-        console.error('Error loading more posts:', error);
-        // Show error state
-        loadMoreSpinner.classList.add('hidden');
-        loadMoreBtn.textContent = 'Error - Try Again';
-        loadMoreBtn.classList.remove('hidden');
-      }
-    });
-  }
-
-  // Initialize on page load
-  initializeInfiniteScroll();
-
-  // Re-initialize after turbo frame updates
-  document.addEventListener('turbo:frame-load', function() {
-    initializeInfiniteScroll();
-  });
-});
-</script>

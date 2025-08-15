@@ -207,3 +207,4 @@ class InfiniteScrollRefactorTest < ApplicationSystemTestCase
     end
   end
 end
+

@@ -1,33 +1,24 @@
 <%# Production-grade infinite scroll for posts index %>
 
-<%= turbo_stream.append "posts_index_container" do %>
-  <%= render partial: "post_card", collection: @posts, as: :post %>
+<%= turbo_stream.append "posts_content" do %>
+  <div class="space-y-6 mt-6">
+    <%= render partial: "post_card", collection: @posts, as: :post, locals: { hide_space: @space.present? } %>
+  </div>
 <% end %>
 
 <% if @pagy.next %>
-  <%= turbo_stream.replace "posts_index_infinite_scroll_trigger" do %>
-    <%= turbo_frame_tag "posts_index_infinite_scroll_trigger", 
+  <%= turbo_stream.replace "infinite_scroll_trigger" do %>
+    <%= turbo_frame_tag "infinite_scroll_trigger", 
                        src: (@space ? space_posts_path(@space, page: @pagy.next, format: :turbo_stream) : posts_path(page: @pagy.next, format: :turbo_stream)),
-                       loading: :lazy,
-                       class: "block py-4" do %>
-      <div class="text-center">
-        <div class="inline-flex items-center px-4 py-2 text-sm text-gray-600">
-          <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Loading more posts...
-        </div>
-      </div>
-    <% end %>
+                       loading: :lazy %>
   <% end %>
 <% else %>
   <%# Remove the trigger when no more pages %>
-  <%= turbo_stream.remove "posts_index_infinite_scroll_trigger" %>
+  <%= turbo_stream.remove "infinite_scroll_trigger" %>
   
   <%# Show end of results message %>
   <% if @posts.any? %>
-    <%= turbo_stream.append "posts_index_container" do %>
+    <%= turbo_stream.append "posts_content" do %>
       <div class="text-center py-6 text-gray-500">
         <div class="inline-flex items-center text-sm">
           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

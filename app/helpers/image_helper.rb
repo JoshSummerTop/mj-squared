@@ -9,27 +9,15 @@ module ImageHelper
         alt: space.title,
         class: css_class,
         loading: "lazy",
-        onerror: "this.src='#{asset_path('placeholders/therapy.jpg')}'"
+        onerror: "this.src='#{asset_path('placeholders/placeholder.jpg')}'"
       )
     else
-      # Fallback to category-specific placeholder
-      category = space.community_categories.first
-      placeholder_name = case category&.name
-      when "Therapy Services" then "therapy.jpg"
-      when "Support Groups" then "support_groups.jpg"
-      when "Sensory Support" then "sensory.jpg"
-      when "Communication Aid" then "communication.jpg"
-      when "Behavior Support" then "behavior.jpg"
-      when "Daily Living Skills" then "daily_living.jpg"
-      when "Social Skills" then "social_skills.jpg"
-      when "Educational Resources" then "education.jpg"
-      when "Respite Care" then "respite_care.jpg"
-      when "Advocacy & Rights" then "advocacy.jpg"
-      else "therapy.jpg"
-      end
+      # Fallback to available placeholder images
+      placeholder_images = ['placeholder.jpg', 'placeholder_2.jpg', 'placeholder_3.jpg']
+      selected_placeholder = placeholder_images.sample
       
       image_tag(
-        "placeholders/#{placeholder_name}",
+        "placeholders/#{selected_placeholder}",
         alt: space.title,
         class: css_class,
         loading: "lazy"

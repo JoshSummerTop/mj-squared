@@ -8,6 +8,20 @@
   </p>
 <% end %>
 
+<%# Update the create post button in the header %>
+<%= turbo_stream.update "create-post-header" do %>
+  <% if @membership %>
+    <%= render "posts/new_modal_form", space: @space, button_class: "btn btn-primary" %>
+  <% end %>
+<% end %>
+
+<%# Update the create post button in the empty state %>
+<%= turbo_stream.update "create-post-empty" do %>
+  <% if @membership %>
+    <%= render "posts/new_modal_form", space: @space, button_class: "btn btn-primary" %>
+  <% end %>
+<% end %>
+
 
 
 

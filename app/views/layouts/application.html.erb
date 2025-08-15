@@ -13,6 +13,9 @@
     <main>
       <%= content_for?(:content) ? yield(:content) : yield %>
     </main>
+    
+    <!-- Flash Messages Container for Turbo Stream -->
+    <div id="turbo_flash_messages"></div>
 
     <%= render "footer" unless hotwire_native_app? %>
     

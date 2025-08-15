@@ -50,7 +50,10 @@ class SpacesController < ApplicationController
         @space.memberships.create!(user: current_user)
         
         format.html { redirect_to root_path, notice: 'Space created successfully.' }
-        format.turbo_stream { render :create_success }
+        format.turbo_stream { 
+          flash[:notice] = 'Space created successfully.'
+          render :create_success 
+        }
       else
         # Re-render the form with errors in the modal turbo_frame
         format.html { render :new, status: :unprocessable_entity }
@@ -76,8 +79,11 @@ class SpacesController < ApplicationController
       if @space.update(space_params)
         @space.age_group_category_ids = params[:space][:age_group_category_ids] || []
         @space.community_category_ids = params[:space][:community_category_ids] || [] if params[:space].key?(:community_category_ids)
-        format.html { redirect_to @space, notice: 'Space updated.' }
-        format.turbo_stream { render :update_success }
+        format.html { redirect_to @space, notice: 'Space updated successfully.' }
+        format.turbo_stream { 
+          flash[:notice] = 'Space updated successfully.'
+          render :update_success 
+        }
       else
         format.html { render 'edit_modal', status: :unprocessable_entity }
         format.turbo_stream { render :update_error, status: :unprocessable_entity }
@@ -89,8 +95,20 @@ class SpacesController < ApplicationController
     # Simple authorization: only creator can delete
     return redirect_to @space, alert: 'Not authorized' unless @space.created_by == current_user
     
-    @space.destroy
-    redirect_to root_path, notice: 'Space deleted.'
+    if @space.destroy
+      respond_to do |format|
+        format.html { redirect_to root_path, notice: 'Space deleted successfully.' }
+        format.turbo_stream { 
+          flash[:notice] = 'Space deleted successfully.'
+          render :destroy 
+        }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @space, alert: "Failed to delete space: #{@space.errors.full_messages.join(', ')}" }
+        format.turbo_stream { render :destroy_error }
+      end
+    end
   end
 
   def join

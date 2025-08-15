@@ -1,12 +1,10 @@
-<%= turbo_stream.remove "comment_#{@comment.id}" %>
-
 <%= turbo_stream.update "flash" do %>
   <div class="fixed top-4 right-4 z-50 max-w-sm w-full" 
        data-controller="flash" 
        style="transition: all 0.3s ease-in-out;">
-    <div class="bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg shadow-lg">
+    <div class="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg shadow-lg">
       <div class="flex items-center justify-between">
-        <p class="text-sm font-medium">Comment deleted successfully.</p>
+        <p class="text-sm font-medium">Failed to delete space: <%= @space.errors.full_messages.join(', ') %></p>
         <button class="ml-4 text-lg leading-none hover:opacity-70 transition-opacity" 
                 data-action="click->flash#dismiss">
           ×

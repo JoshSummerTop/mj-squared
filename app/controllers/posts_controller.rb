@@ -61,8 +61,11 @@ class PostsController < ApplicationController
     
     respond_to do |format|
       if @post.save
-        format.html { redirect_to @post, notice: 'Post created.' }
-        format.turbo_stream { render :create_success }
+        format.html { redirect_to @post, notice: 'Post created successfully.' }
+        format.turbo_stream { 
+          flash[:notice] = 'Post created successfully.'
+          render :create_success 
+        }
       else
         # Re-render the form with errors in the modal turbo_frame
         format.html { render :new, status: :unprocessable_entity }
@@ -87,8 +90,11 @@ class PostsController < ApplicationController
     respond_to do |format|
       if @post.update(post_params.except(:age_group_category_ids))
         @post.age_group_category_ids = @post.space.age_group_category_ids
-        format.html { redirect_to @post, notice: 'Post updated.' }
-        format.turbo_stream { render :update_success }
+        format.html { redirect_to @post, notice: 'Post updated successfully.' }
+        format.turbo_stream { 
+          flash[:notice] = 'Post updated successfully.'
+          render :update_success 
+        }
       else
         format.html { render 'edit_modal', status: :unprocessable_entity }
         format.turbo_stream { render :update_error, status: :unprocessable_entity }
@@ -101,8 +107,20 @@ class PostsController < ApplicationController
     return redirect_to @post, alert: 'Not authorized' unless @post.created_by == current_user
     
     space = @post.space
-    @post.destroy
-    redirect_to space_path(space), notice: 'Post deleted.'
+    if @post.destroy
+      respond_to do |format|
+        format.html { redirect_to space_path(space), notice: 'Post deleted successfully.' }
+        format.turbo_stream { 
+        flash[:notice] = 'Post deleted successfully.'
+        render :destroy 
+      }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @post, alert: "Failed to delete post: #{@post.errors.full_messages.join(', ')}" }
+        format.turbo_stream { render :destroy_error }
+      end
+    end
   end
 
   def like

@@ -1,0 +1,4 @@
+// @tiptap/extension-blockquote@3.2.0 downloaded from https://ga.jspm.io/npm:@tiptap/extension-blockquote@3.2.0/dist/index.js
+
+import{Node as t,wrappingInputRule as e,mergeAttributes as o}from"@tiptap/core";import{jsx as r}from"@tiptap/core/jsx-runtime";var n=/^\s*>\s$/;var a=t.create({name:"blockquote",addOptions(){return{HTMLAttributes:{}}},content:"block+",group:"block",defining:true,parseHTML(){return[{tag:"blockquote"}]},renderHTML({HTMLAttributes:t}){return r("blockquote",{...o(this.options.HTMLAttributes,t),children:r("slot",{})})},addCommands(){return{setBlockquote:()=>({commands:t})=>t.wrapIn(this.name),toggleBlockquote:()=>({commands:t})=>t.toggleWrap(this.name),unsetBlockquote:()=>({commands:t})=>t.lift(this.name)}},addKeyboardShortcuts(){return{"Mod-Shift-b":()=>this.editor.commands.toggleBlockquote()}},addInputRules(){return[e({find:n,type:this.type})]}});var s=a;export{a as Blockquote,s as default,n as inputRegex};
+

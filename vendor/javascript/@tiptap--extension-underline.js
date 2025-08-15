@@ -1,0 +1,4 @@
+// @tiptap/extension-underline@3.2.0 downloaded from https://ga.jspm.io/npm:@tiptap/extension-underline@3.2.0/dist/index.js
+
+import{Mark as e,mergeAttributes as t}from"@tiptap/core";var r=e.create({name:"underline",addOptions(){return{HTMLAttributes:{}}},parseHTML(){return[{tag:"u"},{style:"text-decoration",consuming:false,getAttrs:e=>!!e.includes("underline")&&{}}]},renderHTML({HTMLAttributes:e}){return["u",t(this.options.HTMLAttributes,e),0]},addCommands(){return{setUnderline:()=>({commands:e})=>e.setMark(this.name),toggleUnderline:()=>({commands:e})=>e.toggleMark(this.name),unsetUnderline:()=>({commands:e})=>e.unsetMark(this.name)}},addKeyboardShortcuts(){return{"Mod-u":()=>this.editor.commands.toggleUnderline(),"Mod-U":()=>this.editor.commands.toggleUnderline()}}});var n=r;export{r as Underline,n as default};
+

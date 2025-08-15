@@ -1,6 +1,6 @@
 <%# Simple, proven modal dialog based on hotfin/hanny pattern %>
 <dialog data-controller="dialog" 
-        class="h-screen w-screen overflow-y-auto transition-opacity duration-300 z-50 bg-black/50 fixed inset-0 [&.open]:opacity-100 opacity-0 backdrop:bg-transparent flex items-center justify-center p-4 pointer-events-none [&.open]:pointer-events-auto" 
+        class="h-screen w-screen transition-opacity duration-300 z-50 bg-black/50 fixed inset-0 [&.open]:opacity-100 opacity-0 backdrop:bg-transparent flex items-center justify-center p-4 pointer-events-none [&.open]:pointer-events-auto" 
         data-action="turbo:frame-load->dialog#open">
   <%= turbo_frame_tag "modal" %>
 </dialog>

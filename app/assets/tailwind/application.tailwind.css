@@ -31,6 +31,8 @@
 @import "components/community";
 @import "components/filters";
 @import "components/post_content";
+@import "components/rich_composer";
+@import "components/tooltips";
 @import "tailwindcss/utilities";
 
 @import "flatpickr/dist/flatpickr.css";

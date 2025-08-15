@@ -36,7 +36,7 @@
     <!-- Post Content Preview -->
     <div class="prose prose-sm max-w-none mb-4">
       <p class="text-gray-700 leading-relaxed">
-        <%= truncate(strip_tags(post.content), length: 200, separator: ' ') %>
+        <%= truncate(strip_tags(post.content.to_plain_text), length: 200, separator: ' ') %>
       </p>
     </div>
 

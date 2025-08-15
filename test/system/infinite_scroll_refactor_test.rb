@@ -208,3 +208,4 @@ class InfiniteScrollRefactorTest < ApplicationSystemTestCase
   end
 end
 
+

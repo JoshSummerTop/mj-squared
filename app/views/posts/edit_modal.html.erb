@@ -20,7 +20,8 @@
     <div class="p-6">
       <%= form_with model: @post, 
                     local: false,
-                    class: "space-y-6" do |f| %>
+                    class: "space-y-6",
+                    data: { controller: "post-form" } do |f| %>
         
         <!-- Validation Errors Summary -->
         <% if @post.errors.any? %>
@@ -49,16 +50,14 @@
           <%= f.label :title, class: "block text-sm font-medium text-gray-700 mb-2" %>
           <%= f.text_field :title, 
                           placeholder: "What would you like to share?",
-                          class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 #{'border-red-500' if @post.errors[:title].any?}" %>
+                          class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 #{'border-red-500' if @post.errors[:title].any?}",
+                          data: { action: "input->post-form#updateTitle input->post-form#autoSave" } %>
         </div>
 
         <!-- Content Field -->
         <div>
           <%= f.label :content, class: "block text-sm font-medium text-gray-700 mb-2" %>
-          <%= f.text_area :content, 
-                         placeholder: "Share your thoughts with the community...",
-                         rows: 6,
-                         class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 #{'border-red-500' if @post.errors[:content].any?}" %>
+          <%= rich_composer_field f, :content, placeholder: "Share your thoughts with the community...", data: { action: "input->post-form#autoSave" } %>
         </div>
 
         <!-- Optional Image Field -->
@@ -71,14 +70,15 @@
             </div>
           <% end %>
           <%= f.file_field :image, accept: "image/*",
-                          class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" %>
+                          class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500",
+                          data: { action: "change->post-form#handleImageUpload" } %>
           <p class="text-sm text-gray-500 mt-1">Upload a new image to replace the current one</p>
         </div>
 
         <!-- Age Group Display (if applicable) -->
-        <% if @post.space&.age_group_categories&.any? %>
+        <% if @post.space.age_group_categories.any? %>
           <div class="bg-gray-50 p-4 rounded-lg">
-            <p class="text-sm font-medium text-gray-700 mb-2">This post will be visible to:</p>
+            <p class="text-sm font-medium text-gray-700 mb-2">This post is visible to:</p>
             <div class="flex flex-wrap gap-2">
               <% @post.space.age_group_categories.each do |age_group| %>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -98,10 +98,11 @@
           </button>
           <%= f.submit "Update Post", 
                       class: "px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500",
-                      data: { disable_with: "Updating..." } %>
+                      data: { disable_with: "Updating...", post_form_target: "submitButton" } %>
         </div>
       <% end %>
     </div>
   </div>
 <% end %>
+
 

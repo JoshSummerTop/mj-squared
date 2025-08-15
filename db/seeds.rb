@@ -536,12 +536,13 @@ spaces.each do |space|
     # Generate varied post content based on space title and post number
     post_content = generate_post_content(space.title, i)
     
-    post = Post.create!(
+    post = Post.new(
       title: post_content[:title],
-      content: post_content[:content],
       space: space,
       created_by: post_creator
     )
+    post.content = post_content[:content]
+    post.save!
     
     all_posts << post
     

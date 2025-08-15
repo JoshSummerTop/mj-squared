@@ -2,106 +2,86 @@
 // <div data-controller="tooltip" data-tooltip-content-value="Hello world"></div>
 
 import { Controller } from "@hotwired/stimulus"
-import { autoUpdate, autoPlacement, computePosition, offset, arrow, shift } from "@floating-ui/dom"
 
 export default class extends Controller {
-  static values = {
-    content: String,
-    placement: String,
-    offset: 6,
-    allowHtml: true
-  }
+  static values = { content: String }
+  static targets = ["tooltip"]
 
   connect() {
-    this.createTooltipElements()
-    this.cleanup = autoUpdate(this.element, this.tooltip, this.updatePosition.bind(this))
-    this.addEvents()
+    this.tooltip = null
+    this.timeout = null
   }
 
   disconnect() {
-    this.tooltip?.remove()
-    this?.cleanup()
+    this.hideTooltip()
   }
 
-  createTooltipElements() {
-    this.tooltip = document.createElement("div")
-    this.tooltip.dataset.tooltipTarget = "content"
-    this.tooltip.classList.add("tooltip")
-    if (this.allowHtmlValue) {
-      this.tooltip.innerHTML = this.contentValue
-    } else {
-      this.tooltip.textContent = this.contentValue
+  show(event) {
+    if (this.timeout) {
+      clearTimeout(this.timeout)
     }
 
-    this.arrow = document.createElement("div")
-    this.arrow.classList.add("arrow")
+    this.timeout = setTimeout(() => {
+      this.createTooltip(event)
+    }, 500) // Show after 500ms delay
+  }
 
-    this.tooltip.appendChild(this.arrow)
+  hide() {
+    if (this.timeout) {
+      clearTimeout(this.timeout)
+    }
+    this.hideTooltip()
+  }
+
+  createTooltip(event) {
+    if (this.tooltip) {
+      this.hideTooltip()
+    }
+
+    const content = this.contentValue || this.element.getAttribute('aria-label') || ''
+    if (!content) return
+
+    this.tooltip = document.createElement('div')
+    this.tooltip.className = 'fixed z-50 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded-md shadow-lg pointer-events-none transition-opacity duration-200'
+    this.tooltip.textContent = content
+
     document.body.appendChild(this.tooltip)
-  }
 
-  updatePosition() {
-    computePosition(this.element, this.tooltip, {
-      middleware: [
-        autoPlacement({
-          allowedPlacements: (this.placementValue ? [this.placementValue] : undefined),
-        }),
-        shift({
-          mainAxis: true,
-          crossAxis: true,
-          padding: 2,
-        }),
-        offset(this.offsetValue),
-        arrow({element: this.arrow}),
-      ]
-    }).then(({x, y, placement, middlewareData}) => {
-      Object.assign(this.tooltip.style, {
-        left: `${x}px`,
-        top: `${y}px`
-      });
+    // Position the tooltip
+    const rect = this.element.getBoundingClientRect()
+    const tooltipRect = this.tooltip.getBoundingClientRect()
+    
+    let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2)
+    let top = rect.top - tooltipRect.height - 8
 
-      const side = placement.split("-")[0];
+    // Adjust if tooltip goes off screen
+    if (left < 8) left = 8
+    if (left + tooltipRect.width > window.innerWidth - 8) {
+      left = window.innerWidth - tooltipRect.width - 8
+    }
+    if (top < 8) {
+      top = rect.bottom + 8
+    }
 
-      const staticSide = {
-        top: "bottom",
-        right: "left",
-        bottom: "top",
-        left: "right"
-      }[side];
-
-      if (middlewareData.arrow) {
-        const { x, y } = middlewareData.arrow;
-        Object.assign(this.arrow.style, {
-          left: x != null ? `${x}px` : "",
-          top: y != null ? `${y}px` : "",
-          // Ensure the static side gets unset when
-          // flipping to other placements' axes.
-          right: "",
-          bottom: "",
-          [staticSide]: `${-8 / 2}px`,
-        });
-      }
+    this.tooltip.style.left = `${left}px`
+    this.tooltip.style.top = `${top}px`
+    this.tooltip.style.opacity = '0'
+    
+    // Fade in
+    requestAnimationFrame(() => {
+      this.tooltip.style.opacity = '1'
     })
-  }
-
-  showTooltip() {
-    this.tooltip.classList.add("open")
-    this.updatePosition()
   }
 
   hideTooltip() {
-    this.tooltip.classList.remove("open")
-  }
-
-  addEvents() {
-    [
-      ['mouseenter', this.showTooltip.bind(this)],
-      ['mouseleave', this.hideTooltip.bind(this)],
-      ['focus', this.showTooltip.bind(this)],
-      ['blur', this.hideTooltip.bind(this)],
-      ['click', this.hideTooltip.bind(this)],
-    ].forEach(([event, listener]) => {
-      this.element.addEventListener(event, listener)
-    })
+    if (this.tooltip) {
+      this.tooltip.style.opacity = '0'
+      setTimeout(() => {
+        if (this.tooltip && this.tooltip.parentNode) {
+          this.tooltip.parentNode.removeChild(this.tooltip)
+        }
+        this.tooltip = null
+      }, 200)
+    }
   }
 }

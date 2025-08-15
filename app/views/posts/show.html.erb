@@ -70,7 +70,11 @@
       <% end %>
       
       <div class="post-content mb-8 prose prose-lg max-w-none">
-        <%= simple_format(@post.content) %>
+        <% if @post.content.present? %>
+          <%= @post.content %>
+        <% else %>
+          <p class="text-gray-500 italic">No content available.</p>
+        <% end %>
       </div>
       
       <div class="mb-8 border-t border-gray-200 pt-6">

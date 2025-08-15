@@ -46,6 +46,10 @@ class SpacesController < ApplicationController
   def edit
     # Simple authorization: only creator can edit
     redirect_to @space, alert: 'Not authorized' unless @space.created_by == current_user
+    
+    respond_to do |format|
+      format.html { render 'edit_modal' }
+    end
   end
 
   def update
@@ -57,10 +61,10 @@ class SpacesController < ApplicationController
         @space.age_group_category_ids = params[:space][:age_group_category_ids] || []
         @space.community_category_ids = params[:space][:community_category_ids] || [] if params[:space].key?(:community_category_ids)
         format.html { redirect_to @space, notice: 'Space updated.' }
-        format.turbo_stream
+        format.turbo_stream { render :update_success }
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.turbo_stream
+        format.html { render 'edit_modal', status: :unprocessable_entity }
+        format.turbo_stream { render :update_error, status: :unprocessable_entity }
       end
     end
   end

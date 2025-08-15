@@ -1,0 +1,3 @@
+<%# Success: Show flash message, then close modal and redirect %>
+<%= turbo_stream.flash_message "Space '#{@space.title}' updated successfully!", type: "success", duration: 6000 %>
+<%= turbo_stream.redirect_to_path space_path(@space), delay: 1000 %>

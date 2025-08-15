@@ -1,0 +1,3 @@
+<%# Success: Show flash message, then close modal and redirect %>
+<%= turbo_stream.flash_message "Post '#{@post.title}' updated successfully!", type: "success", duration: 6000 %>
+<%= turbo_stream.redirect_to_path post_path(@post), delay: 1000 %>

@@ -59,6 +59,10 @@ class PostsController < ApplicationController
   def edit
     # Simple authorization: only creator can edit
     redirect_to @post, alert: 'Not authorized' unless @post.created_by == current_user
+    
+    respond_to do |format|
+      format.html { render 'edit_modal' }
+    end
   end
 
   def update
@@ -69,10 +73,10 @@ class PostsController < ApplicationController
       if @post.update(post_params.except(:age_group_category_ids))
         @post.age_group_category_ids = @post.space.age_group_category_ids
         format.html { redirect_to @post, notice: 'Post updated.' }
-        format.turbo_stream
+        format.turbo_stream { render :update_success }
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.turbo_stream
+        format.html { render 'edit_modal', status: :unprocessable_entity }
+        format.turbo_stream { render :update_error, status: :unprocessable_entity }
       end
     end
   end

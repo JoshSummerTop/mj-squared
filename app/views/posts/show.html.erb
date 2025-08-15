@@ -52,7 +52,7 @@
         
         <% if user_signed_in? && @post.created_by == current_user %>
           <div class="flex gap-2 ml-4">
-            <%= render "posts/form_modal", post: @post, space: @post.space, action_text: "Edit", title: "Edit Post", button_class: "btn btn-secondary btn-sm" %>
+            <%= render "posts/edit_modal_form", post: @post, action_text: "Edit", button_class: "btn btn-secondary btn-sm" %>
             <%= button_to 'Delete', post_path(@post), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-sm' %>
           </div>
         <% end %>

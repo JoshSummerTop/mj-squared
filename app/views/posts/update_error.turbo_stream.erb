@@ -1,0 +1,4 @@
+<%# Error: Replace modal content with form showing validation errors %>
+<%= turbo_stream.replace "modal" do %>
+  <%= render template: "posts/edit_modal" %>
+<% end %>

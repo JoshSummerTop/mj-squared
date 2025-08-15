@@ -67,6 +67,66 @@ def generate_post_content(space_title, post_index)
       { title: "Managing caregiver burnout", content: "Caregiver burnout is real and more common than we like to admit. How do you recognize the signs and what strategies have helped you recover and prevent it?" },
       { title: "Building a support network as a caregiver", content: "Having a strong support network makes such a difference in caregiving. How have you built meaningful connections with others who understand your journey?" }
     ]
+  when "Educational Resources"
+    [
+      { title: "Finding the right educational resources", content: "Navigating educational resources can be overwhelming. Here are some tools and materials that have been helpful for our family's learning journey." },
+      { title: "Adapting learning materials for different needs", content: "Every child learns differently. How do you adapt educational materials to work for your family's unique learning styles and needs?" },
+      { title: "Supporting learning at home", content: "Creating a supportive learning environment at home is so important. What strategies have worked well for your family?" }
+    ]
+  when "Health and Wellness"
+    [
+      { title: "Physical health strategies for families", content: "Maintaining physical health as a family can be challenging but rewarding. Here are some approaches that have worked well for us." },
+      { title: "Mental health support and resources", content: "Mental health is just as important as physical health. What resources and strategies have helped your family maintain emotional well-being?" },
+      { title: "Building healthy habits together", content: "Creating healthy habits as a family is easier when everyone is involved. How do you encourage healthy choices in your household?" }
+    ]
+  when "Technology and Kids"
+    [
+      { title: "Managing screen time effectively", content: "Screen time can be a challenge for many families. What strategies have you found effective for balancing technology use with other activities?" },
+      { title: "Educational technology that works", content: "Technology can be a great educational tool when used thoughtfully. What apps and programs have been beneficial for your family?" },
+      { title: "Setting healthy technology boundaries", content: "Setting clear boundaries around technology use is important. How do you establish and maintain these boundaries in your family?" }
+    ]
+  when "Financial Planning"
+    [
+      { title: "Budgeting strategies for families", content: "Financial planning is crucial for families with special needs. What budgeting strategies have helped you manage expenses effectively?" },
+      { title: "Understanding available financial resources", content: "There are many financial resources available to families. How do you navigate and access the support that's available?" },
+      { title: "Planning for long-term financial security", content: "Long-term financial planning is important for all families. What approaches have you found helpful for securing your family's future?" }
+    ]
+  when "Travel and Outings"
+    [
+      { title: "Planning accessible family trips", content: "Traveling with family can be wonderful but requires planning. What tips do you have for making trips enjoyable for everyone?" },
+      { title: "Local outing ideas for families", content: "Local outings can be just as rewarding as big trips. What are your favorite local activities that work well for your family?" },
+      { title: "Making travel inclusive for all", content: "Inclusive travel experiences are so important. How do you ensure that travel activities work for everyone in your family?" }
+    ]
+  when "Sibling Support"
+    [
+      { title: "Supporting siblings' emotional needs", content: "Siblings in families with special needs have unique experiences and needs. How do you support all your children's emotional well-being?" },
+      { title: "Creating inclusive family activities", content: "Finding activities that work for all siblings can be challenging. What strategies have helped you create inclusive family experiences?" },
+      { title: "Helping siblings understand and support each other", content: "Sibling relationships are so important. How do you help your children understand and support each other's unique needs?" }
+    ]
+  when "Advocacy and Rights"
+    [
+      { title: "Understanding your family's rights", content: "Knowing your family's rights is essential for effective advocacy. What resources have helped you understand and navigate the system?" },
+      { title: "Effective advocacy strategies", content: "Advocacy can be challenging but is so important. What strategies have you found effective for advocating for your family's needs?" },
+      { title: "Building relationships with service providers", content: "Strong relationships with service providers can make a big difference. How do you build and maintain these important connections?" }
+    ]
+  when "Creative Arts"
+    [
+      { title: "Art activities for all abilities", content: "Creative arts can be wonderful for families of all abilities. What art activities have been successful and enjoyable for your family?" },
+      { title: "Music and movement activities", content: "Music and movement can be great ways to connect and have fun. What musical activities work well in your family?" },
+      { title: "Expressing creativity together", content: "Creative expression is important for everyone. How do you encourage and support creativity in your family?" }
+    ]
+  when "Holiday Celebrations"
+    [
+      { title: "Making holidays special for everyone", content: "Holidays can be wonderful but also overwhelming. How do you make holiday celebrations work for your family's unique needs?" },
+      { title: "Creating inclusive holiday traditions", content: "Family traditions are so important. How do you create holiday traditions that include everyone in your family?" },
+      { title: "Managing holiday stress and expectations", content: "Holiday stress can affect everyone. What strategies help your family manage holiday expectations and stress?" }
+    ]
+  when "Emergency Preparedness"
+    [
+      { title: "Creating emergency plans for families", content: "Emergency preparedness is important for all families. How do you create plans that work for your family's specific needs?" },
+      { title: "Emergency kits and supplies", content: "Having the right supplies on hand is crucial. What items do you include in your family's emergency preparedness kit?" },
+      { title: "Communicating emergency plans with family", content: "Everyone in the family needs to understand emergency plans. How do you ensure everyone knows what to do in an emergency?" }
+    ]
   else
     [
       { title: "Welcome to our supportive community", content: "Excited to be part of this wonderful community. Looking forward to connecting with others, sharing experiences, and learning from each other's journeys." },
@@ -161,6 +221,86 @@ def generate_comment_content(space_title, comment_index)
       "These self-care strategies sound manageable and practical. It's important to remember we can't pour from an empty cup.",
       "The caregiving journey can be isolating sometimes, so it's wonderful to connect with others who understand the experience."
     ]
+  when "Educational Resources"
+    [
+      "These educational resources look really helpful! Finding the right materials can make such a difference in learning.",
+      "Adapting materials for different learning styles is so important. Thanks for sharing what's worked for your family.",
+      "Supporting learning at home is crucial. These strategies sound practical and effective for many families.",
+      "Educational resources that actually work are gold! Appreciate you sharing your experiences and recommendations.",
+      "Learning at home can be challenging but rewarding. These approaches sound like they could help many families."
+    ]
+  when "Health and Wellness"
+    [
+      "Physical health is so important for families. These strategies sound like they could work well for many households.",
+      "Mental health support is crucial and often overlooked. Thanks for highlighting these important resources.",
+      "Building healthy habits together is such a great approach. Family involvement makes it more sustainable.",
+      "Health and wellness can be challenging to prioritize. These strategies sound manageable and effective.",
+      "Taking care of the whole family's health is so important. Thanks for sharing these practical approaches."
+    ]
+  when "Technology and Kids"
+    [
+      "Screen time management is such a common challenge. These strategies sound really practical and thoughtful.",
+      "Educational technology can be wonderful when used well. Thanks for sharing what's worked for your family.",
+      "Setting boundaries around technology is so important. These approaches sound like they could help many families.",
+      "Technology can be both helpful and challenging. It's great to hear strategies that work well for families.",
+      "Balancing technology use is an ongoing challenge. These tips sound like they could help many families find better balance."
+    ]
+  when "Financial Planning"
+    [
+      "Financial planning is so important for families. These budgeting strategies sound really practical and helpful.",
+      "Understanding available resources can be overwhelming. Thanks for sharing your experience navigating the system.",
+      "Long-term financial security is crucial. These planning approaches sound like they could help many families.",
+      "Financial resources for families with special needs can be complex. Appreciate you sharing what you've learned.",
+      "Budgeting with family needs in mind is challenging but important. These strategies sound really helpful."
+    ]
+  when "Travel and Outings"
+    [
+      "Travel planning for families can be complex but rewarding. These tips sound really practical and helpful.",
+      "Local outings are often the best family experiences. Thanks for sharing ideas that work well for families.",
+      "Inclusive travel experiences are so important. These approaches sound like they could help many families.",
+      "Family travel can be wonderful with the right planning. These suggestions sound really thoughtful and practical.",
+      "Making travel work for everyone in the family is challenging but worth it. Thanks for sharing your experiences."
+    ]
+  when "Sibling Support"
+    [
+      "Sibling relationships are so important. Supporting all children's emotional needs is crucial for family harmony.",
+      "Inclusive family activities can be challenging to find. These strategies sound really helpful for many families.",
+      "Helping siblings understand each other is such important work. Thanks for sharing approaches that have worked.",
+      "Sibling support is often overlooked but so important. These strategies sound really thoughtful and practical.",
+      "Creating an environment where all siblings feel supported is crucial. Thanks for sharing what's worked for your family."
+    ]
+  when "Advocacy and Rights"
+    [
+      "Understanding your family's rights is so important. These resources sound really helpful for navigating the system.",
+      "Effective advocacy can make such a difference. Thanks for sharing strategies that have worked for your family.",
+      "Building relationships with service providers is crucial. These approaches sound really practical and effective.",
+      "Advocacy can be overwhelming but necessary. These strategies sound like they could help many families.",
+      "Knowing your rights and how to advocate effectively is so important. Thanks for sharing your experiences."
+    ]
+  when "Creative Arts"
+    [
+      "Creative arts can be wonderful for families of all abilities. These activities sound really fun and inclusive.",
+      "Music and movement activities are great for family bonding. Thanks for sharing ideas that work well for families.",
+      "Encouraging creativity in families is so important. These approaches sound really supportive and fun.",
+      "Art activities that work for everyone are gold! Thanks for sharing what's been successful for your family.",
+      "Creative expression is important for everyone. These activities sound really inclusive and enjoyable."
+    ]
+  when "Holiday Celebrations"
+    [
+      "Making holidays special for everyone is so important. These strategies sound really thoughtful and inclusive.",
+      "Family traditions are such a wonderful way to connect. Thanks for sharing ideas that work for diverse families.",
+      "Managing holiday stress is crucial for family enjoyment. These approaches sound really practical and helpful.",
+      "Inclusive holiday celebrations are so important. These strategies sound like they could help many families.",
+      "Holiday planning that works for everyone is challenging but rewarding. Thanks for sharing your experiences."
+    ]
+  when "Emergency Preparedness"
+    [
+      "Emergency preparedness is so important for families. These planning strategies sound really practical and thorough.",
+      "Having the right supplies on hand is crucial. Thanks for sharing what you include in your emergency kit.",
+      "Communicating emergency plans with family is essential. These approaches sound really important and practical.",
+      "Emergency planning for families with special needs requires extra consideration. Thanks for sharing your experience.",
+      "Being prepared for emergencies gives such peace of mind. These strategies sound really comprehensive and helpful."
+    ]
   else
     [
       "Welcome! This community has been such a wonderful source of support and connection.",
@@ -250,7 +390,7 @@ age_group_categories = age_groups_data.map do |age_data|
   AgeGroupCategory.find_or_create_by!(name: age_data[:name])
 end
 
-puts "Creating 10 community spaces..."
+puts "Creating 20 community spaces..."
 space_categories_data = [
   {
     title: "Books to read",
@@ -301,6 +441,56 @@ space_categories_data = [
     title: "Caregiver Guidance", 
     description: "Resources and support for professional caregivers",
     category: "Caregivers"
+  },
+  {
+    title: "Educational Resources",
+    description: "Learning materials and educational support for families",
+    category: "Parents"
+  },
+  {
+    title: "Health and Wellness",
+    description: "Physical and mental health resources for families",
+    category: "Caregivers"
+  },
+  {
+    title: "Technology and Kids",
+    description: "Managing screen time and technology use in families",
+    category: "Parents"
+  },
+  {
+    title: "Financial Planning",
+    description: "Financial resources and planning for families with special needs",
+    category: "Caregivers"
+  },
+  {
+    title: "Travel and Outings",
+    description: "Travel tips and outing ideas for families",
+    category: "Parents"
+  },
+  {
+    title: "Sibling Support",
+    description: "Supporting siblings in families with special needs",
+    category: "Parents"
+  },
+  {
+    title: "Advocacy and Rights",
+    description: "Understanding rights and advocacy for families",
+    category: "Caregivers"
+  },
+  {
+    title: "Creative Arts",
+    description: "Art, music, and creative activities for families",
+    category: "Caregivers"
+  },
+  {
+    title: "Holiday Celebrations",
+    description: "Making holidays special and inclusive for all families",
+    category: "Parents"
+  },
+  {
+    title: "Emergency Preparedness",
+    description: "Emergency planning and preparedness for families",
+    category: "Caregivers"
   }
 ]
 
@@ -332,15 +522,14 @@ space_categories_data.each do |space_data|
   end
 end
 
-puts "Creating multiple posts per space..."
+puts "Creating 20 posts per space..."
 all_posts = []
 
 spaces.each do |space|
-  # Create 2-4 posts per space
-  num_posts = rand(2..4)
+  # Create 20 posts per space
   space_members = space.users.to_a
   
-  num_posts.times do |i|
+  20.times do |i|
     # Rotate through different post creators
     post_creator = space_members.sample
     
@@ -364,13 +553,12 @@ spaces.each do |space|
   end
 end
 
-puts "Creating comments on posts..."
+puts "Creating 20 comments per post..."
 all_posts.each do |post|
-  # Create 1-5 comments per post
-  num_comments = rand(1..5)
+  # Create 20 comments per post
   post_space_members = post.space.users.to_a
   
-  num_comments.times do |i|
+  20.times do |i|
     commenter = post_space_members.sample
     next if commenter == post.created_by && i == 0 # Skip first comment if same as post creator
     

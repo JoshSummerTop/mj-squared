@@ -33,13 +33,18 @@
           <% if @joined_spaces.any? %>
             <h2 class="h3 mb-6">Your Spaces (<%= @joined_spaces.count %> spaces)</h2>
             
-            <!-- Your Spaces Swiper -->
-          <div class="relative px-16" data-controller="swiper">
-            <div class="slider-container overflow-hidden">
-              <div class="slider-wrapper" data-swiper-target="container">
+            <!-- Enhanced Your Spaces Swiper -->
+          <div class="relative px-4 lg:px-16" data-controller="swiper">
+            <!-- Progress bar -->
+            <div class="mb-4 h-1 bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full slider-progress rounded-full" style="width: 33.33%"></div>
+            </div>
+            
+            <div class="slider-container overflow-hidden rounded-xl">
+              <div class="slider-wrapper cursor-grab active:cursor-grabbing" data-swiper-target="container">
                 <% @joined_spaces.each_with_index do |space, index| %>
                   <div class="slider-slide space-card-slide p-2" data-swiper-target="slide" data-slide-index="<%= index %>">
-                  <%= link_to space_path(space), class: "your-space-card block h-full bg-white rounded-lg border border-primary-500 overflow-hidden transition-all duration-200 hover:shadow-lg hover:scale-[1.02]", data: { turbo_frame: "_top" } do %>
+                  <%= link_to space_path(space), class: "your-space-card group block h-full bg-white rounded-xl border border-primary-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-[1.03] hover:border-primary-400 hover:-translate-y-1", data: { turbo_frame: "_top" } do %>
                     <div class="aspect-video relative overflow-hidden bg-gray-200 flex items-center justify-center">
                       <% if space.image.attached? %>
                         <%= image_tag space.image, class: 'w-full h-full object-cover', alt: space.title %>

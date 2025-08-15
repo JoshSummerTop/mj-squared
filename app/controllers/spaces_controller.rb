@@ -6,7 +6,23 @@ class SpacesController < ApplicationController
     @posts_relation = @space.posts.includes(:created_by, :age_group_categories, :likes)
                                   .order(created_at: :desc)
     
-    @pagy, @posts = pagy(@posts_relation, items: 10)
+    # Manual pagination (bypassing pagy configuration issues)
+    page = (params[:page] || 1).to_i
+    per_page = 10
+    total_count = @posts_relation.count
+    
+    @posts = @posts_relation.limit(per_page).offset((page - 1) * per_page)
+    
+    # Create pagy-compatible object for templates
+    require 'ostruct'
+    @pagy = OpenStruct.new(
+      page: page,
+      count: total_count,
+      from: (page - 1) * per_page + 1,
+      to: [page * per_page, total_count].min,
+      next: (page * per_page < total_count) ? page + 1 : nil
+    )
+    
     @membership = current_user&.memberships&.find_by(space: @space) if user_signed_in?
     
     respond_to do |format|

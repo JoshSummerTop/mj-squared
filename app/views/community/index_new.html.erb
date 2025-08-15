@@ -153,25 +153,12 @@
     </section>
     </turbo-frame>
     
-    <!-- Clean pagination implementation - NO missing JavaScript controllers -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-      <%= render partial: "space_card", collection: @spaces, as: :space %>
-    </div>
-    
-    <% if @pagy.next %>
-      <%= turbo_frame_tag "pagination_trigger", 
-                         src: root_path(page: @pagy.next, format: :turbo_stream, tab: params[:tab], age_group: params[:age_group]), 
-                         loading: :lazy,
-                         class: "w-full flex justify-center py-8" do %>
-        <div class="inline-flex items-center px-4 py-2 text-sm text-gray-600">
-          <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 818-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Loading more spaces...
-        </div>
-      <% end %>
-    <% end %>
+    <!-- Production-grade infinite scroll implementation - EXACT hotfin pattern -->
+    <%= turbo_frame_tag "spaces" %>
+    <%= turbo_frame_tag "pagination", 
+                       src: root_path(format: :turbo_stream, tab: params[:tab], age_group: params[:age_group]), 
+                       loading: :lazy, 
+                       class: "grid grid-cols-1 sm:grid-cols-2 gap-6" %>
     
 
   </div>

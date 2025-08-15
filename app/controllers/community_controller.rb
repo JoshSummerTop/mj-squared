@@ -6,12 +6,28 @@ class CommunityController < ApplicationController
     params[:tab] = 'all' if params[:tab].blank?
     params[:age_group] = 'all' if params[:age_group].blank?
 
-    # NEW: Clean, production-grade pagination (no more legacy code)
+    # Clean pagination setup
     @selected_category = CommunityCategory.find_by(slug: params[:tab]) if params[:tab].present? && params[:tab] != 'all'
     @selected_age_group = AgeGroupCategory.find_by(slug: params[:age_group]) if params[:age_group].present? && params[:age_group] != 'all'
 
-    @spaces = filtered_spaces
-    @pagy, @spaces = pagy(@spaces, items: 12)
+    # Manual pagination (bypassing pagy configuration issues)
+    page = (params[:page] || 1).to_i
+    per_page = 10
+    
+    all_spaces = filtered_spaces
+    total_count = all_spaces.count
+    
+    @spaces = all_spaces.limit(per_page).offset((page - 1) * per_page)
+    
+    # Create pagy-compatible object for templates
+    require 'ostruct'
+    @pagy = OpenStruct.new(
+      page: page,
+      count: total_count,
+      from: (page - 1) * per_page + 1,
+      to: [page * per_page, total_count].min,
+      next: (page * per_page < total_count) ? page + 1 : nil
+    )
 
     # Age groups available based on selected categories
     if @selected_category
@@ -49,6 +65,7 @@ class CommunityController < ApplicationController
     # Apply filters using clean approach
     spaces = spaces.joins(:community_categories).where(community_categories: {id: @selected_category.id}) if @selected_category
     spaces = spaces.joins(:age_group_categories).where(age_group_categories: {id: @selected_age_group.id}) if @selected_age_group
+
 
     spaces.distinct
   end

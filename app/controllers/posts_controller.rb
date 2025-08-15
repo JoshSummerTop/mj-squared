@@ -6,7 +6,7 @@ class PostsController < ApplicationController
 
   def show
     @space = @post.space
-    @comments = @post.comments.includes(:user)
+    @comments = @post.comments.includes(:user).order(created_at: :desc)
     @like = current_user&.likes&.find_by(post: @post) if user_signed_in?
   end
 

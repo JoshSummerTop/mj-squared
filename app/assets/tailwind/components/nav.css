@@ -1,13 +1,13 @@
 .nav-link {
-  @apply block no-underline text-gray-500 hover:text-gray-800 dark:text-gray-200 dark:hover:text-gray-300 px-2 py-1 text-base font-medium whitespace-nowrap;
+  @apply block no-underline text-white hover:text-primary-100 dark:text-white dark:hover:text-primary-100 px-2 py-1 text-base font-medium whitespace-nowrap transition-colors duration-200;
   line-height: 30px;
 
   &.active {
-    @apply font-semibold;
+    @apply font-semibold text-primary-100;
   }
 
   &:focus {
-    @apply text-gray-900;
+    @apply text-primary-100;
   }
 }
 

@@ -1,7 +1,7 @@
 <div class="relative" data-controller="dropdown">
   <button data-action="click->dropdown#toggle click@window->dropdown#hide" role="button" class="inline-block select-none" aria-label="Profile Menu">
-    <span class="flex items-center text-gray-700 dark:text-gray-100 appearance-none">
-      <%= account_avatar current_account, include_user: true, class: "rounded-full h-8 w-8 ring-2 ring-transparent hover:ring-gray-400 dark:hover:ring-gray-100" %>
+    <span class="flex items-center text-white appearance-none">
+      <%= account_avatar current_account, include_user: true, class: "rounded-full h-8 w-8 ring-2 ring-transparent hover:ring-primary-200 transition-colors duration-200" %>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="fill-current w-4 h-4"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path></svg>
     </span>
   </button>

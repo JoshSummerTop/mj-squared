@@ -3,6 +3,7 @@ class PostsController < ApplicationController
   before_action :set_space, only: [:new, :create]
   before_action :set_space_if_present, only: [:index]
   before_action :authenticate_user!, except: [:show, :index]
+  before_action :require_subscription!, only: [:show, :index]
 
   def show
     @space = @post.space

@@ -1,6 +1,7 @@
 class SpacesController < ApplicationController
   before_action :set_space, only: [:show, :edit, :update, :destroy, :join, :leave]
-  before_action :authenticate_user!, except: [:show]
+  before_action :authenticate_user!
+  before_action :require_subscription!, only: [:show, :new, :create]
 
   def show
     @posts_relation = @space.posts.includes(:created_by, :age_group_categories, :likes)

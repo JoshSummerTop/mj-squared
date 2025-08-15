@@ -55,6 +55,27 @@ button[disabled]        .when-enabled { display: none; }
   }
 }
 
+.btn-blue {
+  @apply text-white;
+  background-color: #3b82f6;
+  &:hover,
+  &:focus {
+    background-color: #2563eb;
+    @apply text-white;
+  }
+  &.btn-outline {
+    @apply bg-transparent border;
+    border-color: #3b82f6;
+    color: #3b82f6;
+    box-shadow: none;
+    &:hover,
+    &:focus {
+      background-color: #2563eb;
+      color: #fff;
+    }
+  }
+}
+
 .btn-secondary {
   @apply text-white;
   background-color: #00b5bd;

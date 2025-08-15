@@ -180,10 +180,10 @@ export default class extends Controller {
       <div class="flex-1 min-h-0">
         <div class="h-full">
           <div contenteditable="true" 
-               class="w-full h-full p-4 border-0 focus:outline-none text-gray-900 leading-relaxed resize-none overflow-y-auto" 
+               class="w-full h-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 leading-relaxed resize-none overflow-y-auto" 
                data-role="editable-content" 
                placeholder="${this.placeholderValue || 'Write something...'}"
-               style="min-height: 300px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+               style="min-height: 200px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
           </div>
         </div>
       </div>

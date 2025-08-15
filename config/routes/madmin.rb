@@ -20,6 +20,8 @@ namespace :madmin, path: :admin do
   resources :account_users
   resources :account_invitations
   resources :community_categories
+  resources :age_group_categories
+  resources :comments
   resources :memberships
   resources :posts
   resources :spaces

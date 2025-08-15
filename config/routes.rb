@@ -9,11 +9,6 @@ Rails.application.routes.draw do
 
   authenticated :user, lambda { |u| u.admin? } do
     draw :madmin
-    
-    namespace :admin do
-      resources :community_categories, only: [:index, :new, :create, :edit, :update, :destroy]
-      resources :age_group_categories, only: [:index, :new, :create, :edit, :update, :destroy]
-    end
   end
 
   resources :announcements, only: [:index, :show]

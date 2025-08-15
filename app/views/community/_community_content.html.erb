@@ -1,0 +1,158 @@
+<%# Content inside the community_content turbo frame - used for filtering responses %>
+
+<% if user_signed_in? %>
+  <section class="mb-8">
+    <% if @joined_spaces.any? %>
+      <h2 class="h3 mb-6">Your Spaces (<%= @joined_spaces.count %> spaces)</h2>
+      
+      <!-- Enhanced Your Spaces Swiper -->
+    <div class="relative px-4 lg:px-16" data-controller="swiper">
+      <!-- Progress bar -->
+      <div class="mb-4 h-1 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full slider-progress rounded-full" style="width: 33.33%"></div>
+      </div>
+      
+      <div class="slider-container overflow-hidden rounded-xl">
+        <div class="slider-wrapper cursor-grab active:cursor-grabbing" data-swiper-target="container">
+          <% @joined_spaces.each_with_index do |space, index| %>
+            <div class="slider-slide space-card-slide p-2" data-swiper-target="slide" data-slide-index="<%= index %>">
+            <%= link_to space_path(space), class: "your-space-card group block h-full bg-white rounded-xl border border-primary-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-[1.03] hover:border-primary-400 hover:-translate-y-1", data: { turbo_frame: "_top" } do %>
+              <div class="aspect-video relative overflow-hidden bg-gray-200 flex items-center justify-center">
+                <% if space.image.attached? %>
+                  <%= image_tag space.image, class: 'w-full h-full object-cover', alt: space.title %>
+                <% else %>
+                  <%= image_tag 'community_placeholder.jpg', class: 'w-full h-full object-cover', alt: space.title %>
+                <% end %>
+              </div>
+              <div class="p-4 flex flex-col justify-between min-h-40">
+                <div class="space-y-2">
+                  <h3 class="h5 text-gray-900 mb-2 line-clamp-2">
+                    <%= space.title %>
+                  </h3>
+                  
+                  <!-- Community Categories -->
+                  <% if space.community_categories.any? %>
+                    <div class="flex flex-wrap gap-1">
+                      <% space.community_categories.each do |category| %>
+                        <span class="px-2 py-0.5 bg-primary-50 text-primary-700 text-xs rounded-full font-medium truncate">
+                          <%= truncate(category.name, length: 12) %>
+                        </span>
+                      <% end %>
+                    </div>
+                  <% end %>
+                  
+                  <!-- Age Group Categories (separate row) -->
+                  <% if space.age_group_categories.any? %>
+                    <div class="flex flex-wrap gap-1">
+                      <% space.age_group_categories.each do |age_group| %>
+                        <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-xs rounded-full font-medium truncate">
+                          <%= truncate(age_group.name, length: 12) %>
+                        </span>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center">
+                    <div class="flex -space-x-2">
+                      <% space.memberships.includes(:user).limit(3).each_with_index do |membership, idx| %>
+                        <div class="relative w-8 h-8 rounded-full overflow-hidden border-2 border-white" style="z-index: <%= 30 - idx %>">
+                          <% if membership.user.avatar.attached? %>
+                            <%= image_tag membership.user.avatar, class: 'w-full h-full object-cover', alt: membership.user.name %>
+                          <% else %>
+                            <%= image_tag "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(membership.user.email.downcase)}?s=32&d=mp", 
+                                class: 'w-full h-full object-cover', alt: membership.user.name %>
+                          <% end %>
+                        </div>
+                      <% end %>
+                      <% if space.memberships.count > 3 %>
+                        <div class="relative w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center border-2 border-white text-white text-xs font-medium" style="z-index: 10">
+                          +<%= space.memberships.count - 3 %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 text-secondary-800">
+                    <%= pluralize(space.posts.count, 'post') %>
+                  </span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- Navigation Buttons -->
+    <div class="flex justify-between items-center mt-4">
+      <button class="swiper-button-prev absolute left-0 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white border border-gray-300 rounded-full flex items-center justify-center text-gray-600 hover:text-gray-800 hover:border-gray-400 transition-all duration-200 shadow-md" data-action="click->swiper#previous">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <button class="swiper-button-next absolute right-0 top-1/2 transform -translate-y-1/2 z-10 w-10 h-10 bg-white border border-gray-300 rounded-full flex items-center justify-center text-gray-600 hover:text-gray-800 hover:border-gray-400 transition-all duration-200 shadow-md" data-action="click->swiper#next">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+    <% else %>
+      <div class="text-center py-8">
+        <div class="text-gray-500 mb-4">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">You haven't joined any spaces yet</h3>
+        <p class="text-gray-600 mb-4">Join some community spaces to see them here and stay updated with the latest discussions.</p>
+        <div class="flex justify-center space-x-3">
+          <a href="#all-spaces" class="btn btn-primary">Browse All Spaces</a>
+        </div>
+      </div>
+    <% end %>
+    
+    <!-- View All Community Activity Link - Always Visible -->
+    <div class="flex justify-end mt-6">
+      <%= link_to 'View All Community Activity', posts_path, 
+          class: 'text-primary-600 font-medium hover:text-primary-700 transition-colors duration-200',
+          data: { turbo_frame: "_top" } %>
+    </div>
+  </section>
+<% end %>
+
+<section id="all-spaces">
+  <h2 class="h3 mb-6">All Spaces</h2>
+  
+  <% if @spaces.any? %>
+    <div class="filter-badges">
+      <%= link_to 'All', root_path(tab: params[:tab], age_group: 'all'), class: params[:age_group] == 'all' ? "filter-badge active" : "filter-badge", data: { turbo_frame: "community_content" } %>
+      <% @age_groups.each do |age| %>
+          <%= link_to age.name, root_path(tab: params[:tab], age_group: age.slug), 
+              class: params[:age_group] == age.slug ? "filter-badge active" : "filter-badge", 
+              data: { turbo_frame: "community_content" } %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- Clean pagination implementation - NO missing JavaScript controllers -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+    <%= render partial: "space_card", collection: @spaces, as: :space %>
+  </div>
+  
+  <% if @pagy.next %>
+    <%= turbo_frame_tag "pagination_trigger", 
+                       src: root_path(page: @pagy.next, format: :turbo_stream, tab: params[:tab], age_group: params[:age_group]), 
+                       loading: :lazy,
+                       class: "w-full flex justify-center py-8" do %>
+      <div class="inline-flex items-center px-4 py-2 text-sm text-gray-600">
+        <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 001-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 001 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Loading more spaces...
+      </div>
+    <% end %>
+  <% end %>
+
+</section>
